@@ -21,3 +21,8 @@ func LoadResource() *Config {
 
 	return Conf
 }
+
+func GetDatabaseConfig() Database {
+	Conf := LoadResource()
+	return Conf.Database
+}
