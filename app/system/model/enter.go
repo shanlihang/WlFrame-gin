@@ -10,7 +10,7 @@ type SysUser struct {
 	Phone    string `gorm:"column:phone" json:"phone"`
 	Sex      int64  `gorm:"column:sex" json:"sex"`
 	Slat     string `gorm:"column:slat" json:"slat"`
-	Birthday string `gorm:"column:birthday" json:"birthday" gor`
+	Birthday string `gorm:"column:birthday" json:"birthday"`
 	Email    string `gorm:"column:email" json:"email"`
 }
 

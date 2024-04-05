@@ -15,7 +15,7 @@ func main() {
 
 	//绑定路由规则，执行的函数
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, "水水水水水水水水水水水水水水")
+		c.JSON(200, "水水水火火水水水水水")
 	})
 
 	initRouter.InitRouter(r)
