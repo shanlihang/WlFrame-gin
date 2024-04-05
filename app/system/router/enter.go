@@ -15,4 +15,11 @@ func SystemRouter(e *gin.Engine) {
 		system.PUT("/user/change", server.ChangeUser)
 		system.DELETE("/user/:id", server.RemoveUser)
 	}
+	{
+		system.POST("/group/add", server.AddUserGroup)
+		system.GET("/group/list", server.QueryUserGroupList)
+		system.GET("/group/:id", server.QueryUserGroupById)
+		system.PUT("/group/change", server.ChangeUserGroup)
+		system.DELETE("/group/:id", server.RemoveUserGroup)
+	}
 }

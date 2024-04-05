@@ -18,3 +18,15 @@ type SysUser struct {
 func (user SysUser) TableName() string {
 	return "sys_user"
 }
+
+// 系统用户组
+type SysUserGroup struct {
+	gorm.Model
+	Name     string `json:"name" gorm:"column:name"`
+	Desc     string `json:"desc" gorm:"column:desc"`
+	ParentID int64  `json:"parentId" gorm:"column:parentId"`
+}
+
+func (group SysUserGroup) TableName() string {
+	return "sys_user_group"
+}
