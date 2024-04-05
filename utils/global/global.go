@@ -7,6 +7,7 @@ import (
 
 // 数据库相关
 var (
-	DB       *gorm.DB
-	DBConfig conf.Database
+	DB           *gorm.DB
+	DBConfig     conf.Database
+	ServerConfig conf.Server
 )

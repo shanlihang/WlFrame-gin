@@ -6,7 +6,7 @@ type Config struct {
 }
 
 type Server struct {
-	Port    int    `mapstructure:"port" json:"port" yaml:"port"`
+	Port    string `mapstructure:"port" json:"port" yaml:"port"`
 	Version string `mapstructure:"version" json:"version" yaml:"version"`
 }
 
@@ -15,5 +15,5 @@ type Database struct {
 	Username string `mapstructure:"username" json:"username" yaml:"username"`
 	Password string `mapstructure:"password" json:"password" yaml:"password"`
 	Host     string `mapstructure:"host" json:"host" yaml:"host"`
-	Port     int    `mapstructure:"port" json:"port" yaml:"port"`
+	Port     string `mapstructure:"port" json:"port" yaml:"port"`
 }

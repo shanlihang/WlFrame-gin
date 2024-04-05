@@ -1,7 +1,11 @@
 package main
 
 import (
-	_ "WlFrame-gin/utils/initDB"
+	"WlFrame-gin/utils/global"
+	_ "WlFrame-gin/utils/initialization/initDb"
+	"WlFrame-gin/utils/initialization/initRouter"
+	_ "WlFrame-gin/utils/initialization/initServer"
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,6 +17,11 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, "水水水水水水水水水水水水水水")
 	})
+
+	initRouter.InitRouter(r)
+
 	////监听端口，默认为8080
-	r.Run()
+	if err := r.Run(":" + global.ServerConfig.Port); err == nil {
+		panic(fmt.Sprintf("服务启动失败,失败原因：%v", err))
+	}
 }

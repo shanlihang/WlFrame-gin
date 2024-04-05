@@ -26,3 +26,8 @@ func GetDatabaseConfig() Database {
 	Conf := LoadResource()
 	return Conf.Database
 }
+
+func GetServerConfig() Server {
+	Conf := LoadResource()
+	return Conf.Server
+}
