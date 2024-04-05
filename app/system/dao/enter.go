@@ -31,3 +31,9 @@ func UpdateUser(user model.SysUser) *gorm.DB {
 	result := global.DB.Save(&user)
 	return result
 }
+
+// 删除用户
+func DeleteUser(id int64) *gorm.DB {
+	result := global.DB.Delete(&model.SysUser{}, id)
+	return result
+}

@@ -43,7 +43,16 @@ func ChangeUser(context *gin.Context) {
 	if err := context.ShouldBindJSON(&user); err != nil {
 		panic(fmt.Sprintf("user数据绑定失败，错误信息为：%v", err))
 	}
-	println(user)
 	result := dao.UpdateUser(user)
+	response.ResponseDML(context, result.RowsAffected, result.Error)
+}
+
+// 删除用户
+func RemoveUser(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeleteUser(id)
 	response.ResponseDML(context, result.RowsAffected, result.Error)
 }
