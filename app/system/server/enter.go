@@ -104,3 +104,99 @@ func QueryUserGroupById(context *gin.Context) {
 	group, result := dao.SelectUserGroupById(id)
 	response.ResponseDQL(context, group, result.RowsAffected, result.RowsAffected, result.Error)
 }
+
+// 新增角色
+func AddRole(context *gin.Context) {
+	role := model.SysRole{}
+	if err := context.ShouldBindJSON(&role); err != nil {
+		panic(fmt.Sprintf("role数据绑定失败，错误信息为：%v", err))
+	}
+	result := dao.InsertRole(role)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(context, result.RowsAffected, result.Error)
+	}
+}
+
+// 删除角色
+func RemoveRole(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeleteRole(id)
+	response.ResponseDML(context, result.RowsAffected, result.Error)
+}
+
+// 更新角色
+func ChangeRole(context *gin.Context) {
+	role := model.SysRole{}
+	if err := context.ShouldBindJSON(&role); err != nil {
+		panic(fmt.Sprintf("role数据绑定失败，错误信息为：%v", err))
+	}
+	result := dao.UpdateRole(role)
+	response.ResponseDML(context, result.RowsAffected, result.Error)
+}
+
+// 查询角色列表
+func QueryRoleList(context *gin.Context) {
+	role, result := dao.SelectRoleList()
+	response.ResponseDQL(context, role, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 根据id查询角色
+func QueryRoleById(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	role, result := dao.SelectRoleById(id)
+	response.ResponseDQL(context, role, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 新增权限
+func AddPermission(context *gin.Context) {
+	permission := model.SysPermission{}
+	if err := context.ShouldBindJSON(&permission); err != nil {
+		panic(fmt.Sprintf("permission数据绑定失败，错误信息为：%v", err))
+	}
+	result := dao.InsertPermission(permission)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(context, result.RowsAffected, result.Error)
+	}
+}
+
+// 删除权限
+func RemovePermission(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeletePermission(id)
+	response.ResponseDML(context, result.RowsAffected, result.Error)
+}
+
+// 更新权限
+func ChangePermission(context *gin.Context) {
+	permission := model.SysPermission{}
+	if err := context.ShouldBindJSON(&permission); err != nil {
+		panic(fmt.Sprintf("permission数据绑定失败，错误信息为：%v", err))
+	}
+	result := dao.UpdatePermission(permission)
+	response.ResponseDML(context, result.RowsAffected, result.Error)
+}
+
+// 查询权限列表
+func QueryPermissionList(context *gin.Context) {
+	role, result := dao.SelectPermissionList()
+	response.ResponseDQL(context, role, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 根据id查询权限
+func QueryPermissionById(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	role, result := dao.SelectPermissionById(id)
+	response.ResponseDQL(context, role, result.RowsAffected, result.RowsAffected, result.Error)
+}

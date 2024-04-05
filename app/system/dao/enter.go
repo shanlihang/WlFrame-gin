@@ -69,3 +69,67 @@ func SelectUserGroupById(id int64) (model.SysUserGroup, *gorm.DB) {
 	result := global.DB.Where("ID = ?", id).First(&group)
 	return group, result
 }
+
+// 新增角色
+func InsertRole(role model.SysRole) *gorm.DB {
+	result := global.DB.Model(model.SysRole{}).Create(&role)
+	return result
+}
+
+// 删除角色
+func DeleteRole(id int64) *gorm.DB {
+	result := global.DB.Delete(&model.SysRole{}, id)
+	return result
+}
+
+// 修改角色
+func UpdateRole(role model.SysRole) *gorm.DB {
+	result := global.DB.Save(&role)
+	return result
+}
+
+// 查询角色列表
+func SelectRoleList() ([]model.SysRole, *gorm.DB) {
+	var roles []model.SysRole
+	result := global.DB.Model(model.SysRole{}).Find(&roles)
+	return roles, result
+}
+
+// 根据id查询角色
+func SelectRoleById(id int64) (model.SysRole, *gorm.DB) {
+	var role model.SysRole
+	result := global.DB.Where("ID = ?", id).First(&role)
+	return role, result
+}
+
+// 新增权限
+func InsertPermission(permission model.SysPermission) *gorm.DB {
+	result := global.DB.Model(model.SysPermission{}).Create(&permission)
+	return result
+}
+
+// 删除权限
+func DeletePermission(id int64) *gorm.DB {
+	result := global.DB.Delete(&model.SysPermission{}, id)
+	return result
+}
+
+// 修改权限
+func UpdatePermission(permission model.SysPermission) *gorm.DB {
+	result := global.DB.Save(&permission)
+	return result
+}
+
+// 查询权限列表
+func SelectPermissionList() ([]model.SysPermission, *gorm.DB) {
+	var permissions []model.SysPermission
+	result := global.DB.Model(model.SysPermission{}).Find(&permissions)
+	return permissions, result
+}
+
+// 根据id查询权限
+func SelectPermissionById(id int64) (model.SysPermission, *gorm.DB) {
+	var permission model.SysPermission
+	result := global.DB.Where("ID = ?", id).First(&permission)
+	return permission, result
+}
