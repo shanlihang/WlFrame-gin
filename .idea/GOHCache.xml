@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GoORMHelperCache">
+    <option name="schemaMapping">
+      <map>
+        <entry key="Config">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/conf/conf.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Database">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/conf/conf.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="Server">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/conf/conf.go" />
+            </set>
+          </value>
+        </entry>
+        <entry key="SysUser">
+          <value>
+            <set>
+              <option value="file://$PROJECT_DIR$/app/system/model/enter.go" />
+            </set>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="scannedPathMapping">
+      <map>
+        <entry key="file://$PROJECT_DIR$/app/system/dao/enter.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712291422595" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/app/system/model/enter.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712290392068" />
+              <option name="schema">
+                <list>
+                  <option value="SysUser" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/app/system/router/enter.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712291372560" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/app/system/server/enter.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712291072464" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/conf/conf.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712286385330" />
+              <option name="schema">
+                <list>
+                  <option value="Config" />
+                  <option value="Server" />
+                  <option value="Database" />
+                </list>
+              </option>
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/conf/load.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712286385254" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/main.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712288077318" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/utils/global/global.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712286385290" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/utils/initialization/initDb/enter.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712286753924" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/utils/initialization/initRouter/enter.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712288077236" />
+            </ScannedPath>
+          </value>
+        </entry>
+        <entry key="file://$PROJECT_DIR$/utils/initialization/initServer/enter.go">
+          <value>
+            <ScannedPath>
+              <option name="lastModified" value="1712286753925" />
+            </ScannedPath>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="tableStructMapping">
+      <map>
+        <entry key="config" value="Config" />
+        <entry key="database" value="Database" />
+        <entry key="server" value="Server" />
+        <entry key="sys_user" value="SysUser" />
+      </map>
+    </option>
+    <option name="lastTimeChecked" value="1712290363017" />
+  </component>
+</project>
