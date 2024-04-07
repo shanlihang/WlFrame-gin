@@ -68,3 +68,14 @@ type LoginGin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+// 验证码
+type SysCaptcha struct {
+	ID        uint   `json:"id" gorm:"column:ID"`
+	VerifyKey string `json:"key" gorm:"column:verifyKey"`
+	VerifyImg string `json:"img" gorm:"column:verifyImg"`
+}
+
+func (captcha SysCaptcha) TableName() string {
+	return "sys_captcha"
+}

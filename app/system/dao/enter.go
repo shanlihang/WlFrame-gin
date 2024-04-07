@@ -147,3 +147,15 @@ func SelectPermissionById(id int64) (model.SysPermission, *gorm.DB) {
 	result := global.DB.Where("ID = ?", id).First(&permission)
 	return permission, result
 }
+
+// 新增验证码
+func InsertCaptcha(captcha model.SysCaptcha) *gorm.DB {
+	result := global.DB.Model(model.SysCaptcha{}).Create(&captcha)
+	return result
+}
+
+// 删除验证码
+func DeleteCaptcha(key string) *gorm.DB {
+	result := global.DB.Where("verifyKey = ?", key).Delete(&model.SysCaptcha{})
+	return result
+}

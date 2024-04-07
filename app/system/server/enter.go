@@ -256,3 +256,22 @@ func UserRegister(context *gin.Context) {
 		response.ResponseText(context, "注册失败")
 	}
 }
+
+// 新增验证码
+func AddCaptcha(context *gin.Context) {
+	c := model.SysCaptcha{}
+	if err := context.ShouldBindJSON(&c); err != nil {
+		panic(fmt.Sprintf("Captcha数据绑定失败，错误信息为：%v", err))
+	}
+	result := dao.InsertCaptcha(c)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(context, result.RowsAffected, result.Error)
+	}
+}
+
+// 删除验证码
+func RemoveCaptcha(context *gin.Context) {
+	k := context.Param("key")
+	result := dao.DeleteCaptcha(k)
+	response.ResponseDML(context, result.RowsAffected, result.Error)
+}

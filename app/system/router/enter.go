@@ -6,6 +6,7 @@ import (
 )
 
 func SystemRouter(e *gin.Engine) {
+
 	// 用户模块 api
 	system := e.Group("/api/v1/system")
 	{
@@ -14,8 +15,6 @@ func SystemRouter(e *gin.Engine) {
 		system.GET("/user/:id", server.QueryUserById)
 		system.PUT("/user/change", server.ChangeUser)
 		system.DELETE("/user/:id", server.RemoveUser)
-		system.POST("/user/login", server.LoginSys)
-		system.POST("/user/register", server.UserRegister)
 	}
 	// 用户组模块 api
 	{
@@ -40,5 +39,12 @@ func SystemRouter(e *gin.Engine) {
 		system.GET("/permission/:id", server.QueryPermissionById)
 		system.PUT("/permission/change", server.ChangePermission)
 		system.DELETE("/permission/:id", server.RemovePermission)
+	}
+	// 登录注册模块 api
+	{
+		system.POST("/sys/login", server.LoginSys)
+		system.POST("/sys/register", server.UserRegister)
+		system.POST("/captcha/add", server.AddCaptcha)
+		system.DELETE("/captcha/:key", server.RemoveCaptcha)
 	}
 }
