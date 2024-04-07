@@ -10,7 +10,6 @@ type SysUser struct {
 	Password string `gorm:"column:password" json:"password"`
 	Phone    string `gorm:"column:phone" json:"phone"`
 	Sex      int64  `gorm:"column:sex" json:"sex"`
-	Slat     string `gorm:"column:slat" json:"slat"`
 	Birthday string `gorm:"column:birthday" json:"birthday"`
 	Email    string `gorm:"column:email" json:"email"`
 }
@@ -57,4 +56,15 @@ type SysPermission struct {
 
 func (permission SysPermission) TableName() string {
 	return "sys_permission"
+}
+
+// JWT
+type JWT struct {
+	Username string `json:"username"`
+}
+
+// 登录
+type LoginGin struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

@@ -14,6 +14,8 @@ func SystemRouter(e *gin.Engine) {
 		system.GET("/user/:id", server.QueryUserById)
 		system.PUT("/user/change", server.ChangeUser)
 		system.DELETE("/user/:id", server.RemoveUser)
+		system.POST("/user/login", server.LoginSys)
+		system.POST("/user/register", server.UserRegister)
 	}
 	// 用户组模块 api
 	{

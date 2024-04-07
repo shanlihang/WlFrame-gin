@@ -6,6 +6,7 @@ import (
 	"WlFrame-gin/utils/response"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"strconv"
 )
 
@@ -15,6 +16,8 @@ func AddUser(context *gin.Context) {
 	if err := context.ShouldBindJSON(&user); err != nil {
 		panic(fmt.Sprintf("user数据绑定失败，错误信息为：%v", err))
 	}
+
+	user.Password = passwordHash(user.Password)
 	result := dao.InsertUser(user)
 	if result.RowsAffected != 0 {
 		response.ResponseDML(context, result.RowsAffected, result.Error)
@@ -199,4 +202,57 @@ func QueryPermissionById(context *gin.Context) {
 	}
 	role, result := dao.SelectPermissionById(id)
 	response.ResponseDQL(context, role, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 系统登录
+func LoginSys(context *gin.Context) {
+	loginMsg := &model.LoginGin{}
+	if err := context.ShouldBindJSON(loginMsg); err != nil {
+		panic(fmt.Sprintf("LoginSys数据绑定失败，错误原因：%v", err))
+	}
+	result, row := dao.SelectUserAndPass(loginMsg.Username)
+	if row == 0 {
+		response.ResponseText(context, "账号不存在")
+		return
+	}
+
+	err := ComparePassword(result.Password, loginMsg.Password)
+	if err != nil {
+		panic(fmt.Sprintf("密码校验异常，错误信息为：%v", err))
+	}
+	response.ResponseText(context, "登录成功")
+}
+
+// 密码加密
+func passwordHash(s string) string {
+	hash, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)
+	if err != nil {
+		panic(fmt.Sprintf("密码加密失败,错误原因为：%v", err))
+	}
+	return string(hash)
+}
+
+// 比较密码是否相同
+func ComparePassword(hashPassword, inputPassword string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(inputPassword))
+	return err
+}
+
+// 注册
+func UserRegister(context *gin.Context) {
+	user := &model.SysUser{}
+	if err := context.ShouldBindJSON(user); err != nil {
+		panic(fmt.Sprintf("user数据绑定失败，错误原因：%v", err))
+	}
+	row := dao.SelectUserByUserName(user.Username)
+	if row != 0 {
+		response.ResponseText(context, "用户名已存在")
+		return
+	}
+	res := dao.InsertUser(*user)
+	if res.RowsAffected != 0 {
+		response.ResponseText(context, "注册成功")
+	} else {
+		response.ResponseText(context, "注册失败")
+	}
 }

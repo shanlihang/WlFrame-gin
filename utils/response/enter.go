@@ -22,3 +22,9 @@ func ResponseDQL(context *gin.Context, data interface{}, total int64, row int64,
 		"err":       msg,
 	})
 }
+
+func ResponseText(context *gin.Context, errMsg string) {
+	context.JSON(http.StatusOK, gin.H{
+		"msg": errMsg,
+	})
+}

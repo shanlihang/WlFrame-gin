@@ -38,6 +38,20 @@ func DeleteUser(id int64) *gorm.DB {
 	return result
 }
 
+// 根据账号查询密码
+func SelectUserAndPass(username string) (model.LoginGin, int64) {
+	login := model.LoginGin{}
+	result := global.DB.Model(model.SysUser{}).Select("username", "password").Where("username =? ", username).First(&login)
+	return login, result.RowsAffected
+}
+
+// 根据账号查询密码
+func SelectUserByUserName(username string) int64 {
+	user := model.SysUser{}
+	result := global.DB.Model(model.SysUser{}).Where("username =? ", username).First(&user)
+	return result.RowsAffected
+}
+
 // 新增用户组
 func InsertUserGroup(group model.SysUserGroup) *gorm.DB {
 	result := global.DB.Model(model.SysUserGroup{}).Create(&group)
