@@ -5,13 +5,15 @@ import "gorm.io/gorm"
 // 系统用户
 type SysUser struct {
 	gorm.Model
-	Name     string `gorm:"column:name" json:"name"`
-	Username string `gorm:"column:username" json:"username"`
-	Password string `gorm:"column:password" json:"password"`
-	Phone    string `gorm:"column:phone" json:"phone"`
-	Sex      int64  `gorm:"column:sex" json:"sex"`
-	Birthday string `gorm:"column:birthday" json:"birthday"`
-	Email    string `gorm:"column:email" json:"email"`
+	Name      string `gorm:"column:name" json:"name"`
+	Username  string `gorm:"column:username" json:"username"`
+	Password  string `gorm:"column:password" json:"password"`
+	Phone     string `gorm:"column:phone" json:"phone"`
+	Sex       int64  `gorm:"column:sex" json:"sex"`
+	Birthday  string `gorm:"column:birthday" json:"birthday"`
+	Email     string `gorm:"column:email" json:"email"`
+	Watermark string `gorm:"column:watermark" json:"watermark"`
+	ThemeId   int64  `gorm:"column:themeId" json:"themeId"`
 }
 
 func (user SysUser) TableName() string {
