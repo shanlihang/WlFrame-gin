@@ -159,3 +159,35 @@ func DeleteCaptcha(key string) *gorm.DB {
 	result := global.DB.Where("verifyKey = ?", key).Delete(&model.SysCaptcha{})
 	return result
 }
+
+// 新增主题
+func InsertTheme(theme model.SysTheme) *gorm.DB {
+	result := global.DB.Model(model.SysTheme{}).Create(&theme)
+	return result
+}
+
+// 查询主题列表
+func SelectThemeList() ([]model.SysTheme, *gorm.DB) {
+	var themes []model.SysTheme
+	result := global.DB.Model(model.SysTheme{}).Find(&themes)
+	return themes, result
+}
+
+// 根据id查询主题
+func SelectThemeById(id int64) (model.SysTheme, *gorm.DB) {
+	var theme model.SysTheme
+	result := global.DB.Where("ID = ?", id).First(&theme)
+	return theme, result
+}
+
+// 修改主题
+func UpdateTheme(theme model.SysTheme) *gorm.DB {
+	result := global.DB.Save(&theme)
+	return result
+}
+
+// 删除主题
+func DeleteTheme(id int64) *gorm.DB {
+	result := global.DB.Delete(&model.SysTheme{}, id)
+	return result
+}

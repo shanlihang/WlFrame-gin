@@ -275,3 +275,52 @@ func RemoveCaptcha(context *gin.Context) {
 	result := dao.DeleteCaptcha(k)
 	response.ResponseDML(context, result.RowsAffected, result.Error)
 }
+
+// 新增主题
+func AddTheme(context *gin.Context) {
+	theme := model.SysTheme{}
+	if err := context.ShouldBindJSON(&theme); err != nil {
+		panic(fmt.Sprintf("theme数据绑定失败，错误信息为：%v", err))
+	}
+
+	result := dao.InsertTheme(theme)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(context, result.RowsAffected, result.Error)
+	}
+}
+
+// 查询主题列表
+func QueryThemeList(context *gin.Context) {
+	themes, result := dao.SelectThemeList()
+	response.ResponseDQL(context, themes, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 根据id查询主题
+func QueryThemeById(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	theme, result := dao.SelectThemeById(id)
+	response.ResponseDQL(context, theme, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 更新主题
+func ChangeTheme(context *gin.Context) {
+	theme := model.SysTheme{}
+	if err := context.ShouldBindJSON(&theme); err != nil {
+		panic(fmt.Sprintf("theme数据绑定失败，错误信息为：%v", err))
+	}
+	result := dao.UpdateTheme(theme)
+	response.ResponseDML(context, result.RowsAffected, result.Error)
+}
+
+// 删除主题
+func RemoveTheme(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeleteTheme(id)
+	response.ResponseDML(context, result.RowsAffected, result.Error)
+}

@@ -47,4 +47,12 @@ func SystemRouter(e *gin.Engine) {
 		system.POST("/captcha/add", server.AddCaptcha)
 		system.DELETE("/captcha/:key", server.RemoveCaptcha)
 	}
+	// 主题模块 api
+	{
+		system.POST("/theme/add", server.AddTheme)
+		system.GET("/theme/list", server.QueryThemeList)
+		system.GET("/theme/:id", server.QueryThemeById)
+		system.PUT("/theme/change", server.ChangeTheme)
+		system.DELETE("/theme/:id", server.RemoveTheme)
+	}
 }

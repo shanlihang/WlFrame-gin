@@ -81,3 +81,23 @@ type SysCaptcha struct {
 func (captcha SysCaptcha) TableName() string {
 	return "sys_captcha"
 }
+
+// 系统主题
+type SysTheme struct {
+	gorm.Model
+	Name          string `json:"name" gorm:"column:name"`
+	Desc          string `json:"desc" gorm:"column:desc"`
+	PageBgColor   string `json:"pageBgColor" gorm:"column:pageBgColor"`
+	BoxBgColor    string `json:"boxBgColor" gorm:"column:boxBgColor"`
+	HoverColor    string `json:"hoverColor" gorm:"column:hoverColor"`
+	SelectColor   string `json:"selectColor" gorm:"column:selectColor"`
+	PrimaryColor  string `json:"primaryColor" gorm:"column:primaryColor"`
+	InfoColor     string `json:"infoColor" gorm:"column:infoColor"`
+	WarnColor     string `json:"warnColor" gorm:"column:warnColor"`
+	MainFontColor string `json:"mainFontColor" gorm:"column:mainFontColor"`
+	SubFontColor  string `json:"subFontColor" gorm:"column:subFontColor"`
+}
+
+func (theme SysTheme) TableName() string {
+	return "sys_theme"
+}
