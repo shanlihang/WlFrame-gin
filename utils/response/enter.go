@@ -9,7 +9,7 @@ import (
 func ResponseDML(context *gin.Context, row int64, msg error) {
 	context.JSON(http.StatusOK, gin.H{
 		"rowAffect": row,
-		"err":       msg,
+		"msg":       msg,
 	})
 }
 
@@ -19,7 +19,7 @@ func ResponseDQL(context *gin.Context, data interface{}, total int64, row int64,
 		"data":      data,
 		"total":     total,
 		"rowAffect": row,
-		"err":       msg,
+		"msg":       msg,
 	})
 }
 

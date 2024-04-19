@@ -34,8 +34,8 @@ func SystemRouter(e *gin.Engine) {
 	}
 	// 权限模块 api
 	{
+		system.GET("/menu/list", server.QueryPermissionList)
 		system.POST("/permission/add", server.AddPermission)
-		system.GET("/permission/list", server.QueryPermissionList)
 		system.GET("/permission/:id", server.QueryPermissionById)
 		system.PUT("/permission/change", server.ChangePermission)
 		system.DELETE("/permission/:id", server.RemovePermission)

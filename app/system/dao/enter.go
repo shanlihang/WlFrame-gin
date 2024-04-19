@@ -134,10 +134,19 @@ func UpdatePermission(permission model.SysPermission) *gorm.DB {
 	return result
 }
 
-// 查询权限列表
+// 查询菜单列表
 func SelectPermissionList() ([]model.SysPermission, *gorm.DB) {
 	var permissions []model.SysPermission
-	result := global.DB.Model(model.SysPermission{}).Find(&permissions)
+	var subPermissions []model.SysPermission
+	//查询顶级菜单
+	result := global.DB.Model(model.SysPermission{}).Where("type = ?", 0).Find(&permissions)
+
+	//查询子菜单并拼接
+	for i := 0; i < len(permissions); i++ {
+		_ = global.DB.Model(model.SysPermission{}).Where("parentId = ?", permissions[i].ID).Find(&subPermissions)
+		permissions[i].Children = subPermissions
+	}
+
 	return permissions, result
 }
 
