@@ -5,31 +5,17 @@ import "gorm.io/gorm"
 // 系统用户
 type SysUser struct {
 	gorm.Model
-	Name      string `gorm:"column:name" json:"name"`
-	Username  string `gorm:"column:username" json:"username"`
-	Password  string `gorm:"column:password" json:"password"`
-	Phone     string `gorm:"column:phone" json:"phone"`
-	Sex       int64  `gorm:"column:sex" json:"sex"`
-	Birthday  string `gorm:"column:birthday" json:"birthday"`
-	Email     string `gorm:"column:email" json:"email"`
-	Watermark string `gorm:"column:watermark" json:"watermark"`
-	ThemeId   int64  `gorm:"column:themeId" json:"themeId"`
+	Name     string `gorm:"column:name" json:"name"`
+	Username string `gorm:"column:username" json:"username"`
+	Password string `gorm:"column:password" json:"password"`
+	Phone    string `gorm:"column:phone" json:"phone"`
+	Sex      int64  `gorm:"column:sex" json:"sex"`
+	Birthday string `gorm:"column:birthday" json:"birthday"`
+	Email    string `gorm:"column:email" json:"email"`
 }
 
 func (user SysUser) TableName() string {
 	return "sys_user"
-}
-
-// 系统用户组
-type SysUserGroup struct {
-	gorm.Model
-	Name     string `json:"name" gorm:"column:name"`
-	Desc     string `json:"desc" gorm:"column:desc"`
-	ParentID int64  `json:"parentId" gorm:"column:parentId"`
-}
-
-func (group SysUserGroup) TableName() string {
-	return "sys_user_group"
 }
 
 // 系统角色
@@ -81,24 +67,4 @@ type SysCaptcha struct {
 
 func (captcha SysCaptcha) TableName() string {
 	return "sys_captcha"
-}
-
-// 系统主题
-type SysTheme struct {
-	gorm.Model
-	Name          string `json:"name" gorm:"column:name"`
-	Desc          string `json:"desc" gorm:"column:desc"`
-	PageBgColor   string `json:"pageBgColor" gorm:"column:pageBgColor"`
-	BoxBgColor    string `json:"boxBgColor" gorm:"column:boxBgColor"`
-	HoverColor    string `json:"hoverColor" gorm:"column:hoverColor"`
-	SelectColor   string `json:"selectColor" gorm:"column:selectColor"`
-	PrimaryColor  string `json:"primaryColor" gorm:"column:primaryColor"`
-	InfoColor     string `json:"infoColor" gorm:"column:infoColor"`
-	WarnColor     string `json:"warnColor" gorm:"column:warnColor"`
-	MainFontColor string `json:"mainFontColor" gorm:"column:mainFontColor"`
-	SubFontColor  string `json:"subFontColor" gorm:"column:subFontColor"`
-}
-
-func (theme SysTheme) TableName() string {
-	return "sys_theme"
 }

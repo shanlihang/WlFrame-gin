@@ -16,14 +16,6 @@ func SystemRouter(e *gin.Engine) {
 		system.PUT("/user/change", server.ChangeUser)
 		system.DELETE("/user/:id", server.RemoveUser)
 	}
-	// 用户组模块 api
-	{
-		system.POST("/group/add", server.AddUserGroup)
-		system.GET("/group/list", server.QueryUserGroupList)
-		system.GET("/group/:id", server.QueryUserGroupById)
-		system.PUT("/group/change", server.ChangeUserGroup)
-		system.DELETE("/group/:id", server.RemoveUserGroup)
-	}
 	// 角色模块 api
 	{
 		system.POST("/role/add", server.AddRole)
@@ -46,13 +38,5 @@ func SystemRouter(e *gin.Engine) {
 		system.POST("/sys/register", server.UserRegister)
 		system.POST("/captcha/add", server.AddCaptcha)
 		system.DELETE("/captcha/:key", server.RemoveCaptcha)
-	}
-	// 主题模块 api
-	{
-		system.POST("/theme/add", server.AddTheme)
-		system.GET("/theme/list", server.QueryThemeList)
-		system.GET("/theme/:id", server.QueryThemeById)
-		system.PUT("/theme/change", server.ChangeTheme)
-		system.DELETE("/theme/:id", server.RemoveTheme)
 	}
 }

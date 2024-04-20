@@ -52,38 +52,6 @@ func SelectUserByUserName(username string) int64 {
 	return result.RowsAffected
 }
 
-// 新增用户组
-func InsertUserGroup(group model.SysUserGroup) *gorm.DB {
-	result := global.DB.Model(model.SysUserGroup{}).Create(&group)
-	return result
-}
-
-// 删除用户组
-func DeleteUserGroup(id int64) *gorm.DB {
-	result := global.DB.Delete(&model.SysUserGroup{}, id)
-	return result
-}
-
-// 修改用户组
-func UpdateUserGroup(group model.SysUserGroup) *gorm.DB {
-	result := global.DB.Save(&group)
-	return result
-}
-
-// 查询用户组列表
-func SelectUserGroupList() ([]model.SysUserGroup, *gorm.DB) {
-	var groups []model.SysUserGroup
-	result := global.DB.Model(model.SysUserGroup{}).Find(&groups)
-	return groups, result
-}
-
-// 根据id查询用户组
-func SelectUserGroupById(id int64) (model.SysUserGroup, *gorm.DB) {
-	var group model.SysUserGroup
-	result := global.DB.Where("ID = ?", id).First(&group)
-	return group, result
-}
-
 // 新增角色
 func InsertRole(role model.SysRole) *gorm.DB {
 	result := global.DB.Model(model.SysRole{}).Create(&role)
@@ -166,37 +134,5 @@ func InsertCaptcha(captcha model.SysCaptcha) *gorm.DB {
 // 删除验证码
 func DeleteCaptcha(key string) *gorm.DB {
 	result := global.DB.Where("verifyKey = ?", key).Delete(&model.SysCaptcha{})
-	return result
-}
-
-// 新增主题
-func InsertTheme(theme model.SysTheme) *gorm.DB {
-	result := global.DB.Model(model.SysTheme{}).Create(&theme)
-	return result
-}
-
-// 查询主题列表
-func SelectThemeList() ([]model.SysTheme, *gorm.DB) {
-	var themes []model.SysTheme
-	result := global.DB.Model(model.SysTheme{}).Find(&themes)
-	return themes, result
-}
-
-// 根据id查询主题
-func SelectThemeById(id int64) (model.SysTheme, *gorm.DB) {
-	var theme model.SysTheme
-	result := global.DB.Where("ID = ?", id).First(&theme)
-	return theme, result
-}
-
-// 修改主题
-func UpdateTheme(theme model.SysTheme) *gorm.DB {
-	result := global.DB.Save(&theme)
-	return result
-}
-
-// 删除主题
-func DeleteTheme(id int64) *gorm.DB {
-	result := global.DB.Delete(&model.SysTheme{}, id)
 	return result
 }
