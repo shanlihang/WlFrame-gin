@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+// 结果
 func AddResult(ctx *gin.Context) {
 	res := &model.Result{}
 	if err := ctx.ShouldBindJSON(res); err != nil {
@@ -31,5 +32,57 @@ func DropResult(ctx *gin.Context) {
 		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
 	}
 	result := dao.DeleteResult(id)
+	response.ResponseDML(ctx, result.RowsAffected, result.Error)
+}
+
+// 社区
+func AddCommunity(ctx *gin.Context) {
+	res := &model.Community{}
+	if err := ctx.ShouldBindJSON(res); err != nil {
+		panic("绑定失败")
+	}
+	result := dao.InsertCommunity(res)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(ctx, result.RowsAffected, result.Error)
+	}
+}
+
+func GetCommunityList(ctx *gin.Context) {
+	list, result := dao.SelectCommunityList()
+	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+func DropCommunity(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeleteCommunity(id)
+	response.ResponseDML(ctx, result.RowsAffected, result.Error)
+}
+
+// 物品
+func AddGoods(ctx *gin.Context) {
+	goods := &model.Goods{}
+	if err := ctx.ShouldBindJSON(goods); err != nil {
+		panic(fmt.Sprintf("%v", err))
+	}
+	result := dao.InsertGoods(goods)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(ctx, result.RowsAffected, result.Error)
+	}
+}
+
+func GetGoodsList(ctx *gin.Context) {
+	list, result := dao.SelectGoodsList()
+	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+func DropGoods(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeleteGoods(id)
 	response.ResponseDML(ctx, result.RowsAffected, result.Error)
 }

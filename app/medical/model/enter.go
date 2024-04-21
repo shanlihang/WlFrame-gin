@@ -104,3 +104,29 @@ type Xt struct {
 func (r Result) TableName() string {
 	return "result"
 }
+
+type Community struct {
+	gorm.Model
+	POIAdcode   string `json:"POI_adcode" gorm:"column:POI_adcode"`
+	POIAddress  string `json:"POI_address" gorm:"column:"`
+	POIDistrict string `json:"POI_district" gorm:"column:POI_district"`
+	POIID       string `json:"POI_id" gorm:"column:POI_id"`
+	POILocation string `json:"POI_location" gorm:"column:POI_location"`
+	POIName     string `json:"POI_name" gorm:"column:POI_name"`
+}
+
+func (r Community) TableName() string {
+	return "community"
+}
+
+type Goods struct {
+	gorm.Model
+	Name   string `json:"name" gorm:"column:name"`
+	Num    int64  `json:"num" gorm:"num:"`
+	Uint   string `json:"uint" gorm:"column:uint"`
+	Remark string `json:"remark" gorm:"remark"`
+}
+
+func (g Goods) TableName() string {
+	return "goods"
+}
