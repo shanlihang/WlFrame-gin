@@ -1,6 +1,7 @@
 package main
 
 import (
+	"WlFrame-gin/middleware/cors"
 	"WlFrame-gin/utils/global"
 	_ "WlFrame-gin/utils/initialization/initDb"
 	"WlFrame-gin/utils/initialization/initRouter"
@@ -12,11 +13,7 @@ import (
 func main() {
 	//创建路由
 	r := gin.Default()
-
-	//绑定路由规则，执行的函数
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, "水水水火火水水水水水")
-	})
+	r.Use(cors.Cors())
 
 	initRouter.InitRouter(r)
 
