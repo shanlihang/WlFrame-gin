@@ -3,10 +3,12 @@ package server
 import (
 	"WlFrame-gin/app/system/dao"
 	"WlFrame-gin/app/system/model"
+	"WlFrame-gin/utils/jwt"
 	"WlFrame-gin/utils/response"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"net/http"
 	"strconv"
 )
 
@@ -172,7 +174,15 @@ func LoginSys(context *gin.Context) {
 	if err != nil {
 		panic(fmt.Sprintf("密码校验异常，错误信息为：%v", err))
 	}
-	response.ResponseText(context, "登录成功")
+	token, err := jwt.GenerateToken(1, "slh")
+	if err != nil {
+		panic(fmt.Sprintf("生成token异常，错误信息为：%v", err))
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"msg":   "登录成功",
+		"token": token,
+	})
+
 }
 
 // 密码加密

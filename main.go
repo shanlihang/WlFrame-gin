@@ -4,6 +4,7 @@ import (
 	"WlFrame-gin/middleware/cors"
 	"WlFrame-gin/utils/global"
 	_ "WlFrame-gin/utils/initialization/initDb"
+	_ "WlFrame-gin/utils/initialization/initJWT"
 	"WlFrame-gin/utils/initialization/initRouter"
 	_ "WlFrame-gin/utils/initialization/initServer"
 	"fmt"
