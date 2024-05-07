@@ -144,8 +144,12 @@ func ChangePermission(context *gin.Context) {
 
 // 查询权限列表
 func QueryPermissionList(context *gin.Context) {
-	role, result := dao.SelectPermissionList()
-	response.ResponseDQL(context, role, result.RowsAffected, result.RowsAffected, result.Error)
+	top, result := dao.SelectTopPermission()
+	for _, item := range top {
+		child, _ := dao.SelectSubPermission(item.ID)
+		println(child)
+	}
+	response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
 }
 
 // 根据id查询权限
