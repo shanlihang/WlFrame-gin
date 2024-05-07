@@ -142,7 +142,7 @@ func ChangePermission(context *gin.Context) {
 	response.ResponseDML(context, result.RowsAffected, result.Error)
 }
 
-// 查询权限列表
+// 查询菜单列表
 func QueryPermissionList(context *gin.Context) {
 	top, result := dao.SelectTopPermission()
 	for _, item := range top {
@@ -150,6 +150,17 @@ func QueryPermissionList(context *gin.Context) {
 		println(child)
 	}
 	response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 查询树状功能列表
+func QueryFeaturesList(context *gin.Context) {
+	dir, result := dao.SelectDirectory()
+	//dir, result := dao.SelectFeatures(12)
+	//for _, item := range top {
+	//	child, _ := dao.SelectSubPermission(item.ID)
+	//	println(child)
+	//}
+	response.ResponseDQL(context, dir, result.RowsAffected, result.RowsAffected, result.Error)
 }
 
 // 根据id查询权限

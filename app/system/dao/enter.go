@@ -116,6 +116,20 @@ func SelectSubPermission(id uint) ([]model.SysPermission, *gorm.DB) {
 	return permissions, result
 }
 
+// 查询目录列表
+func SelectDirectory() ([]model.SysPermission, *gorm.DB) {
+	var directory []model.SysPermission
+	result := global.DB.Model(model.SysPermission{}).Where("type = ?", 1).Find(&directory)
+	return directory, result
+}
+
+// 查询目录下的功能
+func SelectFeatures(id uint) ([]model.SysPermission, *gorm.DB) {
+	var features []model.SysPermission
+	result := global.DB.Model(model.SysPermission{}).Where("parentId = ?", id).Find(&features)
+	return features, result
+}
+
 // 根据id查询权限
 func SelectPermissionById(id int64) (model.SysPermission, *gorm.DB) {
 	var permission model.SysPermission
