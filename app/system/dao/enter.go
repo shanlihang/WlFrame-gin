@@ -15,14 +15,14 @@ func InsertUser(user model.SysUser) *gorm.DB {
 // 查询用户列表
 func SelectUserList() ([]model.SysUser, *gorm.DB) {
 	var users []model.SysUser
-	result := global.DB.Model(model.SysUser{}).Find(&users)
+	result := global.DB.Model(model.SysUser{}).Omit("Password").Find(&users)
 	return users, result
 }
 
 // 根据id查询用户
 func SelectUserById(id int64) (model.SysUser, *gorm.DB) {
 	var user model.SysUser
-	result := global.DB.Where("ID = ?", id).First(&user)
+	result := global.DB.Where("ID = ?", id).Omit("Password").First(&user)
 	return user, result
 }
 

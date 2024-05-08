@@ -32,15 +32,15 @@ func (role SysRole) TableName() string {
 // 系统权限
 type SysPermission struct {
 	gorm.Model
-	Name      *string         `json:"name" gorm:"column:name"`
-	Component *string         `json:"component" gorm:"column:component"`
-	Icon      *string         `json:"icon" gorm:"column:icon"`
-	ParentID  *int64          `json:"parentId" gorm:"column:parentId"`
-	Router    *string         `json:"router" gorm:"column:router"`
-	Sort      *int64          `json:"sort" gorm:"column:sort"`
-	Type      *int64          `json:"type" gorm:"column:type"`
-	URI       *string         `json:"uri" gorm:"column:uri"`
-	Children  []SysPermission `json:"children" gorm:"-"`
+	Name      *string          `json:"name" gorm:"column:name"`
+	Component *string          `json:"component" gorm:"column:component"`
+	Icon      *string          `json:"icon" gorm:"column:icon"`
+	ParentID  *int64           `json:"parentId" gorm:"column:parentId"`
+	Router    *string          `json:"router" gorm:"column:router"`
+	Sort      *int64           `json:"sort" gorm:"column:sort"`
+	Type      *int64           `json:"type" gorm:"column:type"`
+	URI       *string          `json:"uri" gorm:"column:uri"`
+	Children  *[]SysPermission `json:"children" gorm:"-"`
 }
 
 func (permission SysPermission) TableName() string {
