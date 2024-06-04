@@ -45,7 +45,7 @@ func SelectUserAndPass(username string) (model.LoginGin, int64) {
 	return login, result.RowsAffected
 }
 
-// 根据账号查询密码
+// 根据账号查询用户
 func SelectUserByUserName(username string) int64 {
 	user := model.SysUser{}
 	result := global.DB.Model(model.SysUser{}).Where("username =? ", username).First(&user)

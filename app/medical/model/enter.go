@@ -107,15 +107,15 @@ func (r Result) TableName() string {
 
 type Community struct {
 	gorm.Model
-	POIAdcode   string `json:"POI_adcode" gorm:"column:POI_adcode"`
-	POIAddress  string `json:"POI_address" gorm:"column:"`
-	POIDistrict string `json:"POI_district" gorm:"column:POI_district"`
-	POIID       string `json:"POI_id" gorm:"column:POI_id"`
-	POILocation string `json:"POI_location" gorm:"column:POI_location"`
-	POIName     string `json:"POI_name" gorm:"column:POI_name"`
+	POIAdcode   string `json:"adcode" gorm:"column:POI_adcode"`
+	POIAddress  string `json:"address" gorm:"column:POI_address"`
+	POIDistrict string `json:"district" gorm:"column:POI_district"`
+	POIID       string `json:"id" gorm:"column:POI_id"`
+	POILocation string `json:"location" gorm:"column:POI_location"`
+	POIName     string `json:"name" gorm:"column:POI_name"`
 }
 
-func (r Community) TableName() string {
+func (c Community) TableName() string {
 	return "community"
 }
 
