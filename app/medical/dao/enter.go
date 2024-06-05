@@ -19,6 +19,13 @@ func SelectResultsList() ([]model.Result, *gorm.DB) {
 	return results, result
 }
 
+// 根据id查询检测结果
+func SelectResultById(ID int64) (model.Result, *gorm.DB) {
+	var res model.Result
+	result := global.DB.Model(model.Result{}).Where("id = ?", ID).First(&res)
+	return res, result
+}
+
 func DeleteResult(ID int64) *gorm.DB {
 	result := global.DB.Delete(&model.Result{}, ID)
 	return result

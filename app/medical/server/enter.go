@@ -26,6 +26,15 @@ func GetResultList(ctx *gin.Context) {
 	response.ResponseDQL(ctx, role, result.RowsAffected, result.RowsAffected, result.Error)
 }
 
+func GetResultById(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	res, result := dao.SelectResultById(id)
+	response.ResponseDQL(ctx, res, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
 func DropResult(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {

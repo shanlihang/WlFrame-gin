@@ -11,6 +11,7 @@ func MedicalRouter(e *gin.Engine) {
 	{
 		system.POST("/result/add", server.AddResult)
 		system.GET("/result/list", server.GetResultList)
+		system.GET("/result/:id", server.GetResultById)
 		system.DELETE("/result/:id", server.DropResult)
 	}
 	//社区
