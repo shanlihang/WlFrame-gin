@@ -68,3 +68,22 @@ func DeleteGoods(ID int64) *gorm.DB {
 	result := global.DB.Delete(&model.Goods{}, ID)
 	return result
 }
+
+// 插入推送
+func InsertMsg(msg *model.PushMsg) *gorm.DB {
+	result := global.DB.Create(msg)
+	return result
+}
+
+// 查询推送列表
+func SelectMsgList() ([]model.PushMsg, *gorm.DB) {
+	var msg []model.PushMsg
+	result := global.DB.Model(model.PushMsg{}).Find(&msg)
+	return msg, result
+}
+
+// 根据id删除推送
+func DeleteMsg(ID int64) *gorm.DB {
+	result := global.DB.Delete(&model.PushMsg{}, ID)
+	return result
+}

@@ -95,3 +95,29 @@ func DropGoods(ctx *gin.Context) {
 	result := dao.DeleteGoods(id)
 	response.ResponseDML(ctx, result.RowsAffected, result.Error)
 }
+
+// 推送
+func AddPush(ctx *gin.Context) {
+	msg := &model.PushMsg{}
+	if err := ctx.ShouldBindJSON(msg); err != nil {
+		panic("绑定失败")
+	}
+	result := dao.InsertMsg(msg)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(ctx, result.RowsAffected, result.Error)
+	}
+}
+
+func GetPushList(ctx *gin.Context) {
+	list, result := dao.SelectMsgList()
+	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+func DropPush(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeleteMsg(id)
+	response.ResponseDML(ctx, result.RowsAffected, result.Error)
+}

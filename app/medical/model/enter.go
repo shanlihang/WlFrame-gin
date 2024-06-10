@@ -2,7 +2,6 @@ package model
 
 import "gorm.io/gorm"
 
-// Request
 type Result struct {
 	gorm.Model
 	Blood    `json:"blood"`
@@ -129,4 +128,14 @@ type Goods struct {
 
 func (g Goods) TableName() string {
 	return "goods"
+}
+
+type PushMsg struct {
+	gorm.Model
+	Title   string `gorm:"column:title"`
+	Content string `gorm:"column:content"`
+}
+
+func (p PushMsg) TableName() string {
+	return "push"
 }
