@@ -139,3 +139,29 @@ type PushMsg struct {
 func (p PushMsg) TableName() string {
 	return "push"
 }
+
+type People struct {
+	gorm.Model
+	Phone    string `json:"phone" gorm:"column:phone"`
+	Email    string `json:"email" gorm:"column:email"`
+	Age      string `json:"age" gorm:"column:age"`
+	Birthday string `json:"birthday" gorm:"column:birthday"`
+	Idnumber string `json:"idnumber" gorm:"column:idnumber"`
+	Name     string `json:"name" gorm:"column:name"`
+	Nation   string `json:"nation" gorm:"column:nation"`
+	Sex      string `json:"sex" gorm:"column:sex"`
+}
+
+func (p People) TableName() string {
+	return "people"
+}
+
+type Feedback struct {
+	gorm.Model
+	Content string `json:"content" gorm:"column:content"`
+	Status  uint   `json:"status" gorm:"column:status"`
+}
+
+func (f Feedback) TableName() string {
+	return "feedback"
+}
