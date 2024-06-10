@@ -132,8 +132,8 @@ func (g Goods) TableName() string {
 
 type PushMsg struct {
 	gorm.Model
-	Title   string `gorm:"column:title"`
-	Content string `gorm:"column:content"`
+	Title   string `gorm:"column:title" json:"title"`
+	Content string `gorm:"column:content" json:"content"`
 }
 
 func (p PushMsg) TableName() string {
