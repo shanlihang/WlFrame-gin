@@ -83,7 +83,6 @@ func AddGoods(ctx *gin.Context) {
 		response.ResponseDML(ctx, result.RowsAffected, result.Error)
 	}
 }
-
 func GetGoodsList(ctx *gin.Context) {
 	name := ctx.Query("name")
 	remark := ctx.Query("remark")
@@ -93,7 +92,6 @@ func GetGoodsList(ctx *gin.Context) {
 		"errMsg": err,
 	})
 }
-
 func PutGood(ctx *gin.Context) {
 	id, err1 := strconv.ParseInt(ctx.Query("id"), 10, 64)
 	if err1 != nil {
@@ -126,7 +124,6 @@ func OutGood(ctx *gin.Context) {
 		response.ResponseDML(ctx, res.RowsAffected, res.Error)
 	}
 }
-
 func GetGoodById(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
@@ -135,7 +132,6 @@ func GetGoodById(ctx *gin.Context) {
 	user, result := dao.SelectGoodsById(id)
 	response.ResponseDQL(ctx, user, result.RowsAffected, result.RowsAffected, result.Error)
 }
-
 func DropGoods(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
@@ -144,7 +140,6 @@ func DropGoods(ctx *gin.Context) {
 	result := dao.DeleteGoods(id)
 	response.ResponseDML(ctx, result.RowsAffected, result.Error)
 }
-
 func ChangeGoods(ctx *gin.Context) {
 	good := &model.Goods{}
 	if err := ctx.ShouldBindJSON(good); err != nil {
@@ -203,12 +198,18 @@ func AddPeople(ctx *gin.Context) {
 		response.ResponseDML(ctx, result.RowsAffected, result.Error)
 	}
 }
-
 func GetPeopleList(ctx *gin.Context) {
-	list, result := dao.SelectPeoplesList()
-	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
-}
+	name := ctx.Query("name")
+	email := ctx.Query("email")
+	phone := ctx.Query("phone")
+	idnumber := ctx.Query("idnumber")
 
+	list, err := dao.SelectPeoplesList(name, email, phone, idnumber)
+	ctx.JSON(200, gin.H{
+		"data":   list,
+		"errMsg": err,
+	})
+}
 func DropPeople(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
@@ -216,6 +217,16 @@ func DropPeople(ctx *gin.Context) {
 	}
 	result := dao.DeletePeople(id)
 	response.ResponseDML(ctx, result.RowsAffected, result.Error)
+}
+func UpdatePeople(ctx *gin.Context) {
+	p := model.People{}
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		panic("绑定失败")
+	}
+	result := dao.UpdatePeople(p)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(ctx, result.RowsAffected, result.Error)
+	}
 }
 
 // 反馈

@@ -43,6 +43,7 @@ func MedicalRouter(e *gin.Engine) {
 		system.POST("/people/add", server.AddPeople)
 		system.GET("/people/list", server.GetPeopleList)
 		system.DELETE("/people/:id", server.DropPeople)
+		system.PUT("/people/update", server.UpdatePeople)
 	}
 	//反馈
 	{

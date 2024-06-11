@@ -123,15 +123,34 @@ func InsertPeople(people *model.People) *gorm.DB {
 }
 
 // 查询居民列表
-func SelectPeoplesList() ([]model.People, *gorm.DB) {
+func SelectPeoplesList(name string, email string, phone string, idnumber string) ([]model.People, error) {
 	var peoples []model.People
-	result := global.DB.Model(model.People{}).Find(&peoples)
-	return peoples, result
+	tx := global.DB.Model(model.People{})
+	if name != "" {
+		tx.Where("name Like ?", "%"+name+"%")
+	}
+	if email != "" {
+		tx.Where("email Like ?", "%"+email+"%")
+	}
+	if phone != "" {
+		tx.Where("phone Like ?", "%"+phone+"%")
+	}
+	if idnumber != "" {
+		tx.Where("idnumber Like ?", "%"+idnumber+"%")
+	}
+	err := tx.Find(&peoples).Error
+	return peoples, err
 }
 
 // 删除居民
 func DeletePeople(ID int64) *gorm.DB {
 	result := global.DB.Delete(&model.People{}, ID)
+	return result
+}
+
+// 修改居民
+func UpdatePeople(people model.People) *gorm.DB {
+	result := global.DB.Updates(people)
 	return result
 }
 
