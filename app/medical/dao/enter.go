@@ -96,11 +96,24 @@ func InsertMsg(msg *model.PushMsg) *gorm.DB {
 	return result
 }
 
+// 更新推送
+func UpdateMsg(msg *model.PushMsg) *gorm.DB {
+	result := global.DB.Updates(msg)
+	return result
+}
+
 // 查询推送列表
-func SelectMsgList() ([]model.PushMsg, *gorm.DB) {
+func SelectMsgList(title string, content string) ([]model.PushMsg, error) {
 	var msg []model.PushMsg
-	result := global.DB.Model(model.PushMsg{}).Find(&msg)
-	return msg, result
+	tx := global.DB.Model(model.PushMsg{})
+	if title != "" {
+		tx.Where("title LIKE ?", "%"+title+"%")
+	}
+	if content != "" {
+		tx.Where("content LIKE ?", "%"+content+"%")
+	}
+	err := tx.Find(&msg).Error
+	return msg, err
 }
 
 // 根据id查询推送

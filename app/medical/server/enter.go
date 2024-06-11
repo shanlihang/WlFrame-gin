@@ -163,12 +163,15 @@ func AddPush(ctx *gin.Context) {
 		response.ResponseDML(ctx, result.RowsAffected, result.Error)
 	}
 }
-
 func GetPushList(ctx *gin.Context) {
-	list, result := dao.SelectMsgList()
-	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
+	title := ctx.Query("title")
+	content := ctx.Query("content")
+	list, err := dao.SelectMsgList(title, content)
+	ctx.JSON(200, gin.H{
+		"data":   list,
+		"errMsg": err,
+	})
 }
-
 func GetPushById(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
@@ -177,7 +180,6 @@ func GetPushById(ctx *gin.Context) {
 	res, result := dao.SelectMsgById(id)
 	response.ResponseDQL(ctx, res, result.RowsAffected, result.RowsAffected, result.Error)
 }
-
 func DropPush(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
@@ -185,6 +187,16 @@ func DropPush(ctx *gin.Context) {
 	}
 	result := dao.DeleteMsg(id)
 	response.ResponseDML(ctx, result.RowsAffected, result.Error)
+}
+func UpdatePush(ctx *gin.Context) {
+	msg := &model.PushMsg{}
+	if err := ctx.ShouldBindJSON(msg); err != nil {
+		panic("绑定失败")
+	}
+	result := dao.UpdateMsg(msg)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(ctx, result.RowsAffected, result.Error)
+	}
 }
 
 // 居民
