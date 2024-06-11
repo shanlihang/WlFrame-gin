@@ -39,4 +39,10 @@ func MedicalRouter(e *gin.Engine) {
 		system.GET("/people/list", server.GetPeopleList)
 		system.DELETE("/people/:id", server.DropPeople)
 	}
+	//反馈
+	{
+		system.POST("/feedback/add", server.AddFeedback)
+		system.GET("/feedback/list", server.GetFeedbackList)
+		system.DELETE("/feedback/:id", server.DropFeedback)
+	}
 }

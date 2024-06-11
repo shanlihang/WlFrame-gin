@@ -148,3 +148,29 @@ func DropPeople(ctx *gin.Context) {
 	result := dao.DeletePeople(id)
 	response.ResponseDML(ctx, result.RowsAffected, result.Error)
 }
+
+// 反馈
+func AddFeedback(ctx *gin.Context) {
+	feedback := &model.Feedback{}
+	if err := ctx.ShouldBindJSON(feedback); err != nil {
+		panic("绑定失败")
+	}
+	result := dao.InsertFeedback(feedback)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(ctx, result.RowsAffected, result.Error)
+	}
+}
+
+func GetFeedbackList(ctx *gin.Context) {
+	list, result := dao.SelectFeedbacksList()
+	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+func DropFeedback(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeleteFeedback(id)
+	response.ResponseDML(ctx, result.RowsAffected, result.Error)
+}

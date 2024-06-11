@@ -107,3 +107,22 @@ func DeletePeople(ID int64) *gorm.DB {
 	result := global.DB.Delete(&model.People{}, ID)
 	return result
 }
+
+// 插入反馈
+func InsertFeedback(feedback *model.Feedback) *gorm.DB {
+	result := global.DB.Create(feedback)
+	return result
+}
+
+// 查询反馈列表
+func SelectFeedbacksList() ([]model.Feedback, *gorm.DB) {
+	var feedbacks []model.Feedback
+	result := global.DB.Model(model.Feedback{}).Find(&feedbacks)
+	return feedbacks, result
+}
+
+// 删除反馈
+func DeleteFeedback(ID int64) *gorm.DB {
+	result := global.DB.Delete(&model.Feedback{}, ID)
+	return result
+}
