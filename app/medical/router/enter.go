@@ -25,7 +25,11 @@ func MedicalRouter(e *gin.Engine) {
 	{
 		system.POST("/goods/add", server.AddGoods)
 		system.GET("/goods/list", server.GetGoodsList)
+		system.PUT("/goods/update", server.ChangeGoods)
 		system.DELETE("/goods/:id", server.DropGoods)
+		system.GET("/goods/:id", server.GetGoodById)
+		system.GET("/goods/put", server.PutGood)
+		system.GET("/goods/out", server.OutGood)
 	}
 	//推送
 	{

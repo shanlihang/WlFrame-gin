@@ -29,7 +29,7 @@ func SelectUserList(name string, phone string, email string, roles []string) ([]
 	if len(roles) != 0 {
 		tx.Preload("Roles", "ID in ?", roles)
 	}
-	err := tx.Omit("Password").Preload("Roles").Find(&users).Error
+	err := tx.Preload("Roles").Find(&users).Error
 	return users, err
 }
 

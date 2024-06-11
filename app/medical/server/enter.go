@@ -4,6 +4,7 @@ import (
 	"WlFrame-gin/app/medical/dao"
 	"WlFrame-gin/app/medical/model"
 	"WlFrame-gin/utils/response"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -84,8 +85,55 @@ func AddGoods(ctx *gin.Context) {
 }
 
 func GetGoodsList(ctx *gin.Context) {
-	list, result := dao.SelectGoodsList()
-	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
+	name := ctx.Query("name")
+	remark := ctx.Query("remark")
+	goods, err := dao.SelectGoodsList(name, remark)
+	ctx.JSON(200, gin.H{
+		"data":   goods,
+		"errMsg": err,
+	})
+}
+
+func PutGood(ctx *gin.Context) {
+	id, err1 := strconv.ParseInt(ctx.Query("id"), 10, 64)
+	if err1 != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err1))
+	}
+	num, err2 := strconv.ParseInt(ctx.Query("num"), 10, 64)
+	if err2 != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err2))
+	}
+	good, _ := dao.SelectGoodsById(id)
+	good.Num += num
+	res := dao.UpdateGood(&good)
+	response.ResponseDML(ctx, res.RowsAffected, res.Error)
+}
+func OutGood(ctx *gin.Context) {
+	id, err1 := strconv.ParseInt(ctx.Query("id"), 10, 64)
+	if err1 != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err1))
+	}
+	num, err2 := strconv.ParseInt(ctx.Query("num"), 10, 64)
+	if err2 != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err2))
+	}
+	good, _ := dao.SelectGoodsById(id)
+	if good.Num < num {
+		response.ResponseDML(ctx, 0, errors.New("出库失败，库存数量少于提取数量"))
+	} else {
+		good.Num -= num
+		res := dao.UpdateGood(&good)
+		response.ResponseDML(ctx, res.RowsAffected, res.Error)
+	}
+}
+
+func GetGoodById(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	user, result := dao.SelectGoodsById(id)
+	response.ResponseDQL(ctx, user, result.RowsAffected, result.RowsAffected, result.Error)
 }
 
 func DropGoods(ctx *gin.Context) {
@@ -95,6 +143,18 @@ func DropGoods(ctx *gin.Context) {
 	}
 	result := dao.DeleteGoods(id)
 	response.ResponseDML(ctx, result.RowsAffected, result.Error)
+}
+
+func ChangeGoods(ctx *gin.Context) {
+	good := &model.Goods{}
+	if err := ctx.ShouldBindJSON(good); err != nil {
+		panic(fmt.Sprintf("%v", err))
+	}
+	fmt.Println(good.ID)
+	result := dao.UpdateGood(good)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(ctx, result.RowsAffected, result.Error)
+	}
 }
 
 // 推送

@@ -69,10 +69,3 @@ type SysCaptcha struct {
 func (captcha SysCaptcha) TableName() string {
 	return "sys_captcha"
 }
-
-// 用户查询参数
-type UserSearch struct {
-	Name  string `json:"name"`
-	Phone string `json:"phone"`
-	Email string `json:"email"`
-}

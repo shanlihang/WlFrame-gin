@@ -58,10 +58,30 @@ func InsertGoods(good *model.Goods) *gorm.DB {
 }
 
 // 查询物品列表
-func SelectGoodsList() ([]model.Goods, *gorm.DB) {
+func SelectGoodsList(name string, remark string) ([]model.Goods, error) {
 	var goods []model.Goods
-	result := global.DB.Model(model.Goods{}).Find(&goods)
-	return goods, result
+	tx := global.DB.Model(model.Goods{})
+	if name != "" {
+		tx.Where("name Like ?", "%"+name+"%")
+	}
+	if remark != "" {
+		tx.Where("remark Like ?", "%"+remark+"%")
+	}
+	err := tx.Find(&goods).Error
+	return goods, err
+}
+
+// 根据id查询物品
+func SelectGoodsById(id int64) (model.Goods, *gorm.DB) {
+	var good model.Goods
+	result := global.DB.Where("ID = ?", id).First(&good)
+	return good, result
+}
+
+// 修改物品信息
+func UpdateGood(good *model.Goods) *gorm.DB {
+	result := global.DB.Model(good).Updates(good)
+	return result
 }
 
 // 删除物品
