@@ -83,6 +83,13 @@ func SelectMsgList() ([]model.PushMsg, *gorm.DB) {
 	return msg, result
 }
 
+// 根据id查询推送
+func SelectMsgById(ID int64) (model.PushMsg, *gorm.DB) {
+	var msg model.PushMsg
+	result := global.DB.Model(model.PushMsg{}).Where("id = ?", ID).First(&msg)
+	return msg, result
+}
+
 // 根据id删除推送
 func DeleteMsg(ID int64) *gorm.DB {
 	result := global.DB.Delete(&model.PushMsg{}, ID)

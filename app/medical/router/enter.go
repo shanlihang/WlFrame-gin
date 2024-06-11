@@ -31,6 +31,7 @@ func MedicalRouter(e *gin.Engine) {
 	{
 		system.POST("/push/add", server.AddPush)
 		system.GET("/push/list", server.GetPushList)
+		system.GET("/push/:id", server.GetPushById)
 		system.DELETE("/push/:id", server.DropPush)
 	}
 	//居民

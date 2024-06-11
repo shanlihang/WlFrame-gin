@@ -114,6 +114,15 @@ func GetPushList(ctx *gin.Context) {
 	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
 }
 
+func GetPushById(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	res, result := dao.SelectMsgById(id)
+	response.ResponseDQL(ctx, res, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
 func DropPush(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
