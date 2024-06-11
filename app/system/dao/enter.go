@@ -3,6 +3,7 @@ package dao
 import (
 	"WlFrame-gin/app/system/model"
 	"WlFrame-gin/utils/global"
+
 	"gorm.io/gorm"
 )
 
@@ -13,10 +14,10 @@ func InsertUser(user model.SysUser) *gorm.DB {
 }
 
 // 查询用户列表
-func SelectUserList() ([]model.SysUser, *gorm.DB) {
+func SelectUserList() ([]model.SysUser, error) {
 	var users []model.SysUser
-	result := global.DB.Model(model.SysUser{}).Omit("Password").Find(&users)
-	return users, result
+	err := global.DB.Model(model.SysUser{}).Omit("Password").Preload("Roles").Find(&users).Error
+	return users, err
 }
 
 // 根据id查询用户

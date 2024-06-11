@@ -6,10 +6,11 @@ import (
 	"WlFrame-gin/utils/jwt"
 	"WlFrame-gin/utils/response"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // 新增用户
@@ -28,8 +29,8 @@ func AddUser(context *gin.Context) {
 
 // 查询用户列表
 func QueryUserList(context *gin.Context) {
-	users, result := dao.SelectUserList()
-	response.ResponseDQL(context, users, result.RowsAffected, result.RowsAffected, result.Error)
+	users, err := dao.SelectUserList()
+	response.ResponseDQL(context, users, 1, 1, err)
 }
 
 // 根据id查询用户

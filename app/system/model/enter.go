@@ -5,13 +5,14 @@ import "gorm.io/gorm"
 // 系统用户
 type SysUser struct {
 	gorm.Model
-	Name     string `gorm:"column:name" json:"name"`
-	Username string `gorm:"column:username" json:"username"`
-	Password string `gorm:"column:password" json:"password"`
-	Phone    string `gorm:"column:phone" json:"phone"`
-	Sex      int64  `gorm:"column:sex" json:"sex"`
-	Birthday string `gorm:"column:birthday" json:"birthday"`
-	Email    string `gorm:"column:email" json:"email"`
+	Name     string    `gorm:"column:name" json:"name"`
+	Username string    `gorm:"column:username" json:"username"`
+	Password string    `gorm:"column:password" json:"password"`
+	Phone    string    `gorm:"column:phone" json:"phone"`
+	Sex      int64     `gorm:"column:sex" json:"sex"`
+	Birthday string    `gorm:"column:birthday" json:"birthday"`
+	Email    string    `gorm:"column:email" json:"email"`
+	Roles    []SysRole `gorm:"many2many:relate_user_role"`
 }
 
 func (user SysUser) TableName() string {
@@ -21,8 +22,8 @@ func (user SysUser) TableName() string {
 // 系统角色
 type SysRole struct {
 	gorm.Model
-	Desc *string `json:"desc" gorm:"column:desc"`
-	Name *string `json:"name" gorm:"column:name"`
+	Desc string `json:"desc" gorm:"column:desc"`
+	Name string `json:"name" gorm:"column:name"`
 }
 
 func (role SysRole) TableName() string {
