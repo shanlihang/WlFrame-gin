@@ -3,6 +3,7 @@ package dao
 import (
 	"WlFrame-gin/app/medical/model"
 	"WlFrame-gin/utils/global"
+
 	"gorm.io/gorm"
 )
 
@@ -85,5 +86,24 @@ func SelectMsgList() ([]model.PushMsg, *gorm.DB) {
 // 根据id删除推送
 func DeleteMsg(ID int64) *gorm.DB {
 	result := global.DB.Delete(&model.PushMsg{}, ID)
+	return result
+}
+
+// 插入居民
+func InsertPeople(people *model.People) *gorm.DB {
+	result := global.DB.Create(people)
+	return result
+}
+
+// 查询居民列表
+func SelectPeoplesList() ([]model.People, *gorm.DB) {
+	var peoples []model.People
+	result := global.DB.Model(model.People{}).Find(&peoples)
+	return peoples, result
+}
+
+// 删除居民
+func DeletePeople(ID int64) *gorm.DB {
+	result := global.DB.Delete(&model.People{}, ID)
 	return result
 }

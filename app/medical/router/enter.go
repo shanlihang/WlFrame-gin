@@ -2,6 +2,7 @@ package router
 
 import (
 	"WlFrame-gin/app/medical/server"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,5 +32,11 @@ func MedicalRouter(e *gin.Engine) {
 		system.POST("/push/add", server.AddPush)
 		system.GET("/push/list", server.GetPushList)
 		system.DELETE("/push/:id", server.DropPush)
+	}
+	//居民
+	{
+		system.POST("/people/add", server.AddPeople)
+		system.GET("/people/list", server.GetPeopleList)
+		system.DELETE("/people/:id", server.DropPeople)
 	}
 }

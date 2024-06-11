@@ -5,8 +5,9 @@ import (
 	"WlFrame-gin/app/medical/model"
 	"WlFrame-gin/utils/response"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 // 结果
@@ -119,5 +120,31 @@ func DropPush(ctx *gin.Context) {
 		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
 	}
 	result := dao.DeleteMsg(id)
+	response.ResponseDML(ctx, result.RowsAffected, result.Error)
+}
+
+// 居民
+func AddPeople(ctx *gin.Context) {
+	people := &model.People{}
+	if err := ctx.ShouldBindJSON(people); err != nil {
+		panic("绑定失败")
+	}
+	result := dao.InsertPeople(people)
+	if result.RowsAffected != 0 {
+		response.ResponseDML(ctx, result.RowsAffected, result.Error)
+	}
+}
+
+func GetPeopleList(ctx *gin.Context) {
+	list, result := dao.SelectPeoplesList()
+	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+func DropPeople(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		panic(fmt.Sprintf("id属性转换为int64类型失败，错误原因：%v", err))
+	}
+	result := dao.DeletePeople(id)
 	response.ResponseDML(ctx, result.RowsAffected, result.Error)
 }
