@@ -14,9 +14,22 @@ func InsertUser(user model.SysUser) *gorm.DB {
 }
 
 // 查询用户列表
-func SelectUserList() ([]model.SysUser, error) {
+func SelectUserList(name string, phone string, email string, roles []string) ([]model.SysUser, error) {
 	var users []model.SysUser
-	err := global.DB.Model(model.SysUser{}).Omit("Password").Preload("Roles").Find(&users).Error
+	tx := global.DB.Model(model.SysUser{}).Omit("Password")
+	if name != "" {
+		tx.Where("name Like ?", "%"+name+"%")
+	}
+	if phone != "" {
+		tx.Where("phone Like ?", "%"+phone+"%")
+	}
+	if email != "" {
+		tx.Where("email Like ?", "%"+email+"%")
+	}
+	if len(roles) != 0 {
+		tx.Preload("Roles", "ID in ?", roles)
+	}
+	err := tx.Omit("Password").Preload("Roles").Find(&users).Error
 	return users, err
 }
 

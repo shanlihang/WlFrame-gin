@@ -19,7 +19,6 @@ func AddUser(context *gin.Context) {
 	if err := context.ShouldBindJSON(&user); err != nil {
 		panic(fmt.Sprintf("user数据绑定失败，错误信息为：%v", err))
 	}
-
 	user.Password = passwordHash(user.Password)
 	result := dao.InsertUser(user)
 	if result.RowsAffected != 0 {
@@ -29,8 +28,15 @@ func AddUser(context *gin.Context) {
 
 // 查询用户列表
 func QueryUserList(context *gin.Context) {
-	users, err := dao.SelectUserList()
-	response.ResponseDQL(context, users, 1, 1, err)
+	name := context.Query("name")
+	phone := context.Query("phone")
+	email := context.Query("email")
+	roles := context.QueryArray("roles[]")
+	users, err := dao.SelectUserList(name, phone, email, roles)
+	context.JSON(200, gin.H{
+		"data":   users,
+		"errMsg": err,
+	})
 }
 
 // 根据id查询用户
