@@ -7,13 +7,11 @@ import (
 	"gorm.io/gorm"
 )
 
-// 插入检测结果
+// 检测结果
 func InsertResult(res *model.Result) *gorm.DB {
 	result := global.DB.Create(res)
 	return result
 }
-
-// 查询检测结果列表
 func SelectResultsList(examNo string, deviceID string, name string, idnumber string) ([]model.Result, error) {
 	var results []model.Result
 	tx := global.DB.Model(model.Result{})
@@ -32,33 +30,36 @@ func SelectResultsList(examNo string, deviceID string, name string, idnumber str
 	err := tx.Find(&results).Error
 	return results, err
 }
-
-// 根据id查询检测结果
 func SelectResultById(ID int64) (model.Result, *gorm.DB) {
 	var res model.Result
 	result := global.DB.Model(model.Result{}).Where("id = ?", ID).First(&res)
 	return res, result
 }
-
 func DeleteResult(ID int64) *gorm.DB {
 	result := global.DB.Delete(&model.Result{}, ID)
 	return result
 }
 
-// 插入社区
+// 社区
 func InsertCommunity(comm *model.Community) *gorm.DB {
 	result := global.DB.Create(comm)
 	return result
 }
-
-// 查询社区列表
-func SelectCommunityList() ([]model.Community, *gorm.DB) {
+func SelectCommunityList(name string, district string, address string) ([]model.Community, error) {
 	var comms []model.Community
-	result := global.DB.Model(model.Community{}).Find(&comms)
-	return comms, result
+	tx := global.DB.Model(model.Community{})
+	if name != "" {
+		tx.Where("POI_name LIKE ?", "%"+name+"%")
+	}
+	if district != "" {
+		tx.Where("POI_district LIKE ?", "%"+district+"%")
+	}
+	if address != "" {
+		tx.Where("POI_address LIKE ?", "%"+address+"%")
+	}
+	err := tx.Find(&comms).Error
+	return comms, err
 }
-
-// 删除社区
 func DeleteCommunity(ID int64) *gorm.DB {
 	result := global.DB.Delete(&model.Community{}, ID)
 	return result

@@ -34,7 +34,6 @@ func GetResultList(ctx *gin.Context) {
 	})
 
 }
-
 func GetResultById(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
@@ -43,7 +42,6 @@ func GetResultById(ctx *gin.Context) {
 	res, result := dao.SelectResultById(id)
 	response.ResponseDQL(ctx, res, result.RowsAffected, result.RowsAffected, result.Error)
 }
-
 func DropResult(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {
@@ -64,10 +62,15 @@ func AddCommunity(ctx *gin.Context) {
 		response.ResponseDML(ctx, result.RowsAffected, result.Error)
 	}
 }
-
 func GetCommunityList(ctx *gin.Context) {
-	list, result := dao.SelectCommunityList()
-	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
+	name := ctx.Query("name")
+	district := ctx.Query("district")
+	address := ctx.Query("detail_address")
+	list, err := dao.SelectCommunityList(name, district, address)
+	ctx.JSON(200, gin.H{
+		"data":   list,
+		"errMsg": err,
+	})
 }
 func DropCommunity(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
