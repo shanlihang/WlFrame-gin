@@ -22,10 +22,17 @@ func AddResult(ctx *gin.Context) {
 		response.ResponseDML(ctx, result.RowsAffected, result.Error)
 	}
 }
-
 func GetResultList(ctx *gin.Context) {
-	role, result := dao.SelectResultsList()
-	response.ResponseDQL(ctx, role, result.RowsAffected, result.RowsAffected, result.Error)
+	examNo := ctx.Query("examNo")
+	deviceID := ctx.Query("deviceID")
+	name := ctx.Query("name")
+	idnumber := ctx.Query("idnumber")
+	result, err := dao.SelectResultsList(examNo, deviceID, name, idnumber)
+	ctx.JSON(200, gin.H{
+		"data":   result,
+		"errMsg": err,
+	})
+
 }
 
 func GetResultById(ctx *gin.Context) {
@@ -62,7 +69,6 @@ func GetCommunityList(ctx *gin.Context) {
 	list, result := dao.SelectCommunityList()
 	response.ResponseDQL(ctx, list, result.RowsAffected, result.RowsAffected, result.Error)
 }
-
 func DropCommunity(ctx *gin.Context) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {

@@ -14,10 +14,23 @@ func InsertResult(res *model.Result) *gorm.DB {
 }
 
 // 查询检测结果列表
-func SelectResultsList() ([]model.Result, *gorm.DB) {
+func SelectResultsList(examNo string, deviceID string, name string, idnumber string) ([]model.Result, error) {
 	var results []model.Result
-	result := global.DB.Model(model.Result{}).Find(&results)
-	return results, result
+	tx := global.DB.Model(model.Result{})
+	if examNo != "" {
+		tx.Where("examNo LIKE ?", "%"+examNo+"%")
+	}
+	if deviceID != "" {
+		tx.Where("deviceID = ?", deviceID)
+	}
+	if name != "" {
+		tx.Where("sfz_name LIKE ?", "%"+name+"%")
+	}
+	if idnumber != "" {
+		tx.Where("sfz_idnumber LIKE ?", "%"+idnumber+"%")
+	}
+	err := tx.Find(&results).Error
+	return results, err
 }
 
 // 根据id查询检测结果
