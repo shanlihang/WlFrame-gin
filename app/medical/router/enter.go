@@ -49,6 +49,7 @@ func MedicalRouter(e *gin.Engine) {
 	//反馈
 	{
 		system.POST("/feedback/add", server.AddFeedback)
+		system.PUT("/feedback/:id", server.ChangeFeedback)
 		system.GET("/feedback/list", server.GetFeedbackList)
 		system.DELETE("/feedback/:id", server.DropFeedback)
 	}

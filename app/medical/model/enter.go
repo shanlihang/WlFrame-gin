@@ -158,8 +158,10 @@ func (p People) TableName() string {
 
 type Feedback struct {
 	gorm.Model
-	Content string `json:"content" gorm:"column:content"`
-	Status  uint   `json:"status" gorm:"column:status"`
+	Content  string `json:"content" gorm:"column:content"`
+	Status   uint   `json:"status" gorm:"column:status"`
+	PeopleId uint   `json:"peopleId" gorm:"column:people_id;"`
+	People   People `json:"people"`
 }
 
 func (f Feedback) TableName() string {
