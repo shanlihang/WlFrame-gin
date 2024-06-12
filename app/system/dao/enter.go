@@ -121,8 +121,8 @@ func UpdatePermission(permission model.SysPermission) *gorm.DB {
 }
 
 // 查询顶级菜单列表
-func SelectTopPermission() ([]model.SysPermission, *gorm.DB) {
-	var permissions []model.SysPermission
+func SelectTopPermission() ([]*model.SysPermission, *gorm.DB) {
+	var permissions []*model.SysPermission
 	result := global.DB.Model(model.SysPermission{}).Where("type = ?", 0).Find(&permissions)
 	return permissions, result
 }

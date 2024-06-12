@@ -154,7 +154,7 @@ func QueryPermissionList(context *gin.Context) {
 	top, result := dao.SelectTopPermission()
 	for _, item := range top {
 		child, _ := dao.SelectSubPermission(item.ID)
-		println(child)
+		item.Children = append(item.Children, child...)
 	}
 	response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
 }
@@ -194,11 +194,13 @@ func LoginSys(context *gin.Context) {
 
 	err := ComparePassword(result.Password, loginMsg.Password)
 	if err != nil {
-		panic(fmt.Sprintf("密码校验异常，错误信息为：%v", err))
+		response.ResponseText(context, "密码错误")
+		return
 	}
 	token, err := jwt.GenerateToken(1, "slh")
 	if err != nil {
-		panic(fmt.Sprintf("生成token异常，错误信息为：%v", err))
+		response.ResponseText(context, "token生成出错")
+		return
 	}
 	context.JSON(http.StatusOK, gin.H{
 		"msg":   "登录成功",
