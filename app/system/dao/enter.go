@@ -57,9 +57,9 @@ func DeleteUser(id int64) *gorm.DB {
 }
 
 // 根据账号查询密码
-func SelectUserAndPass(username string) (model.LoginGin, int64) {
-	login := model.LoginGin{}
-	result := global.DB.Model(model.SysUser{}).Select("username", "password").Where("username =? ", username).First(&login)
+func SelectUserAndPass(username string) (model.SysUser, int64) {
+	login := model.SysUser{}
+	result := global.DB.Model(model.SysUser{}).Where("username =? ", username).First(&login)
 	return login, result.RowsAffected
 }
 

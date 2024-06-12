@@ -39,7 +39,5 @@ func SystemRouter(e *gin.Engine) {
 	{
 		system.POST("/sys/login", server.LoginSys)
 		system.POST("/sys/register", server.UserRegister)
-		system.POST("/captcha/add", server.AddCaptcha)
-		system.DELETE("/captcha/:key", server.RemoveCaptcha)
 	}
 }
