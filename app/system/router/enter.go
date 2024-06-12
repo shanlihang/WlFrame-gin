@@ -2,6 +2,7 @@ package router
 
 import (
 	"WlFrame-gin/app/system/server"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,8 +27,9 @@ func SystemRouter(e *gin.Engine) {
 	}
 	// 权限模块 api
 	{
-		system.GET("/menu/list", server.QueryPermissionList)
-		system.GET("/func/list", server.QueryFeaturesList)
+		system.GET("/permission/common", server.SelectPermissionList)
+		system.GET("/permission/menu", server.QueryPermissionList)
+		system.GET("/permission/tree", server.QueryMenusList)
 		system.POST("/permission/add", server.AddPermission)
 		system.GET("/permission/:id", server.QueryPermissionById)
 		system.PUT("/permission/change", server.ChangePermission)

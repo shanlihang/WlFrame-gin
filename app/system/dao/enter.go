@@ -116,7 +116,7 @@ func DeletePermission(id int64) *gorm.DB {
 
 // 修改权限
 func UpdatePermission(permission model.SysPermission) *gorm.DB {
-	result := global.DB.Save(&permission)
+	result := global.DB.Updates(&permission)
 	return result
 }
 
@@ -128,16 +128,17 @@ func SelectTopPermission() ([]*model.SysPermission, *gorm.DB) {
 }
 
 // 查询子级菜单列表
-func SelectSubPermission(id uint) ([]model.SysPermission, *gorm.DB) {
-	var permissions []model.SysPermission
+func SelectSubPermission(id uint) ([]*model.SysPermission, *gorm.DB) {
+	var permissions []*model.SysPermission
 	result := global.DB.Model(model.SysPermission{}).Where("parentId = ? ", id).Find(&permissions)
 	return permissions, result
 }
 
 // 查询目录列表
 func SelectDirectory() ([]model.SysPermission, *gorm.DB) {
+
 	var directory []model.SysPermission
-	result := global.DB.Model(model.SysPermission{}).Where("type = ?", 1).Find(&directory)
+	result := global.DB.Model(model.SysPermission{}).Where("type <= ?", 1).Find(&directory)
 	return directory, result
 }
 

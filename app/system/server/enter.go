@@ -149,7 +149,7 @@ func ChangePermission(context *gin.Context) {
 	response.ResponseDML(context, result.RowsAffected, result.Error)
 }
 
-// 查询菜单列表
+// 查询树状菜单列表
 func QueryPermissionList(context *gin.Context) {
 	top, result := dao.SelectTopPermission()
 	for _, item := range top {
@@ -160,14 +160,23 @@ func QueryPermissionList(context *gin.Context) {
 }
 
 // 查询树状功能列表
-func QueryFeaturesList(context *gin.Context) {
-	dir, result := dao.SelectDirectory()
-	//dir, result := dao.SelectFeatures(12)
-	//for _, item := range top {
-	//	child, _ := dao.SelectSubPermission(item.ID)
-	//	println(child)
-	//}
-	response.ResponseDQL(context, dir, result.RowsAffected, result.RowsAffected, result.Error)
+func QueryMenusList(context *gin.Context) {
+	top, result := dao.SelectTopPermission()
+	for _, item := range top {
+		child, _ := dao.SelectSubPermission(item.ID)
+		item.Children = append(item.Children, child...)
+		for _, i := range child {
+			childs, _ := dao.SelectSubPermission(i.ID)
+			i.Children = append(i.Children, childs...)
+		}
+	}
+	response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 查询普通列表
+func SelectPermissionList(context *gin.Context) {
+	list, result := dao.SelectDirectory()
+	response.ResponseDQL(context, list, result.RowsAffected, result.RowsAffected, result.Error)
 }
 
 // 根据id查询权限
