@@ -27,7 +27,11 @@ func SelectUserList(name string, phone string, email string, roles []string) ([]
 		tx.Where("email Like ?", "%"+email+"%")
 	}
 	if len(roles) != 0 {
-		tx.Preload("Roles", "ID in ?", roles)
+		var sysUserIds []int64
+		global.DB.Table("relate_user_role").
+			Where("sys_role_id in (?)", roles).
+			Select("sys_user_id").Scan(&sysUserIds)
+		tx.Where("id in (?)", sysUserIds)
 	}
 	err := tx.Preload("Roles").Find(&users).Error
 	return users, err
