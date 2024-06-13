@@ -258,7 +258,7 @@ func LoginSys(context *gin.Context) {
 		return
 	}
 	result.Password = ""
-	log.Println(token)
+	log.Println("token:", token)
 	context.JSON(http.StatusOK, gin.H{
 		"msg":      "登录成功",
 		"token":    token,
