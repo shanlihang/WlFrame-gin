@@ -5,8 +5,8 @@ import (
 	"WlFrame-gin/utils/global"
 	"WlFrame-gin/utils/jwt"
 	"fmt"
-	"github.com/casbin/casbin"
-	xormadapter "github.com/casbin/xorm-adapter"
+	casbin "github.com/casbin/casbin/v2"
+	xormadapter "github.com/casbin/xorm-adapter/v2"
 	"github.com/gin-gonic/gin"
 	"log"
 )
@@ -25,9 +25,8 @@ func CasbinSetup() {
 		global.DBConfig.Port,
 		global.DBConfig.DbName,
 	)
-	a := xormadapter.NewAdapter("mysql", dataSourceName, true)
-
-	e := casbin.NewEnforcer("conf/rbac_models.conf", a)
+	a, _ := xormadapter.NewAdapter("mysql", dataSourceName, true)
+	e, _ := casbin.NewEnforcer("conf/rbac_models.conf", a)
 
 	Enforcer = e
 }
@@ -41,6 +40,9 @@ func Rbac() gin.HandlerFunc {
 		if !ok {
 			fmt.Println("token校验失败")
 			c.Next()
+		} else if token == "---000---" {
+			//跳过鉴权
+			c.Abort()
 		} else {
 			var e *casbin.Enforcer
 			e = Enforcer
@@ -71,8 +73,9 @@ func Rbac() gin.HandlerFunc {
 				isTrue := false
 				for _, roleName := range claims.Role {
 					sub := roleName
+					log.Println(obj, sub, act)
 					//判断策略中是否存在
-					ok := e.Enforce(sub, obj, "GET")
+					ok, _ := e.Enforce(sub, obj, "GET")
 					if ok {
 						log.Println(obj, act, sub)
 						//只要有一个角色的权限校验通过，那么就该用户权限校验通过

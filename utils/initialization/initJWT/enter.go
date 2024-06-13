@@ -1,6 +1,8 @@
 package initJWT
 
-import "WlFrame-gin/utils/global"
+import (
+	"WlFrame-gin/utils/global"
+)
 
 func init() {
 	global.Secret = []byte("slh67490009")

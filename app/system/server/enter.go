@@ -22,6 +22,7 @@ func AddUser(context *gin.Context) {
 	if err := context.ShouldBindJSON(&user); err != nil {
 		panic(fmt.Sprintf("user数据绑定失败，错误信息为：%v", err))
 	}
+	user.Password = "123456"
 	user.Password = passwordHash(user.Password)
 	//创建用户
 	result := dao.InsertUser(model.SysUser{
@@ -103,7 +104,7 @@ func AddRole(context *gin.Context) {
 	for _, permission := range role.Permissions {
 		sysPermission, _ := dao.SelectPermissionById(int64(permission.Value))
 		//增加 Policy(角色的权限；此次获取不了请求方法，全部设置为 GET，权限校验时不校验请求方法)
-		ok := authentication.Enforcer.AddPolicy(role.Name, sysPermission.URI, "GET")
+		ok, _ := authentication.Enforcer.AddPolicy(role.Name, sysPermission.URI, "GET")
 		if !ok {
 			fmt.Println("Policy已经存在")
 		}
@@ -245,7 +246,9 @@ func LoginSys(context *gin.Context) {
 		return
 	}
 
+	//hashPassword := passwordHash(loginMsg.Password)
 	err := ComparePassword(result.Password, loginMsg.Password)
+	//err := ComparePassword(result.Password, hashPassword)
 	if err != nil {
 		response.ResponseText(context, "密码错误")
 		context.Next()

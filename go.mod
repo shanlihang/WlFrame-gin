@@ -7,7 +7,10 @@ require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/bytedance/sonic v1.11.3 // indirect
 	github.com/casbin/casbin v1.9.1 // indirect
+	github.com/casbin/casbin/v2 v2.96.0 // indirect
+	github.com/casbin/govaluate v1.1.0 // indirect
 	github.com/casbin/xorm-adapter v1.0.0 // indirect
+	github.com/casbin/xorm-adapter/v2 v2.5.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
@@ -21,6 +24,7 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/go-xorm/xorm v0.7.9 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/howeyc/fsnotify v0.9.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -46,6 +50,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.18.2 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
+	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
@@ -61,6 +66,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/mysql v1.5.6 // indirect
 	gorm.io/gorm v1.25.9 // indirect
-	xorm.io/builder v0.3.6 // indirect
+	xorm.io/builder v0.3.7 // indirect
 	xorm.io/core v0.7.2-0.20190928055935-90aeac8d08eb // indirect
+	xorm.io/xorm v1.0.3 // indirect
 )

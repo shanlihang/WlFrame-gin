@@ -113,7 +113,7 @@ func DeleteRole(id int64) *gorm.DB {
 	sysRole, _ := SelectRoleById(id)
 	//获取包含这个角色名称的权限 Policy
 	var casbinRuleS = [][]string{}
-	list := authentication.Enforcer.GetPolicy()
+	list, _ := authentication.Enforcer.GetPolicy()
 	for _, vlist := range list {
 		if vlist[0] == sysRole.Name {
 			casbinRuleS = append(casbinRuleS, vlist)
@@ -129,7 +129,7 @@ func DeleteRole(id int64) *gorm.DB {
 
 	//删除权限 Policy
 	for _, casbinRule := range casbinRuleS {
-		ok := authentication.Enforcer.RemovePolicy(casbinRule[0], casbinRule[1], casbinRule[2])
+		ok, _ := authentication.Enforcer.RemovePolicy(casbinRule[0], casbinRule[1], casbinRule[2])
 		if !ok {
 			fmt.Println("Policy不存在")
 		}
@@ -181,7 +181,7 @@ func SelectRelateUserRoleById(id int64) ([]string, *gorm.DB) {
 		sysRole, _ := SelectRoleById(int64(relateUserRole.SysRoleID))
 		roleNames = append(roleNames, sysRole.Name)
 	}
-	return nil, result
+	return roleNames, result
 }
 
 // 新增权限
