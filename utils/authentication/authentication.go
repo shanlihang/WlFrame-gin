@@ -88,6 +88,7 @@ func Rbac() gin.HandlerFunc {
 					c.Abort()
 				} else {
 					fmt.Println("权限验证通过")
+					c.Set("roles", claims.Role)
 					c.Next()
 				}
 			}

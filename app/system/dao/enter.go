@@ -10,13 +10,13 @@ import (
 )
 
 // 新增用户
-func InsertUser(user model.SysUser, roleIDs []uint) *gorm.DB {
+func InsertUser(user model.SysUser, roleIDs []int64) *gorm.DB {
 	result := global.DB.Model(model.SysUser{}).Create(&user)
 	// 创建用户角色关联
 	for _, roleID := range roleIDs {
 		userRole := model.RelateUserRole{
 			SysUserID: user.ID,
-			SysRoleID: roleID,
+			SysRoleID: uint(roleID),
 		}
 		global.DB.Model(model.RelateUserRole{}).Create(&userRole)
 	}
@@ -56,12 +56,12 @@ func SelectUserById(id int64) (model.SysUser, *gorm.DB) {
 }
 
 // 修改用户
-func UpdateUser(user model.SysUser, roles []uint) *gorm.DB {
+func UpdateUser(user model.SysUser, roles []int64) *gorm.DB {
 	result := global.DB.Save(&user)
 	for _, roleID := range roles {
 		userRole := model.RelateUserRole{
 			SysUserID: user.ID,
-			SysRoleID: roleID,
+			SysRoleID: uint(roleID),
 		}
 		global.DB.Model(model.RelateUserRole{}).Create(&userRole)
 	}
@@ -248,4 +248,14 @@ func InsertCaptcha(captcha model.SysCaptcha) *gorm.DB {
 func DeleteCaptcha(key string) *gorm.DB {
 	result := global.DB.Where("verifyKey = ?", key).Delete(&model.SysCaptcha{})
 	return result
+}
+
+// 根据角色id查询权限
+func SelectPermissionList(roleID int64) ([]model.SysPermission, *gorm.DB) {
+	var permissions []model.SysPermission
+	result := global.DB.Model(model.RelateRolePermission{}).
+		Where("sys_role_id = ?", roleID).
+		Joins("left join sys_permission on sys_permission.ID = sys_relate_role_permission.sys_permission_id").
+		Find(&permissions)
+	return permissions, result
 }

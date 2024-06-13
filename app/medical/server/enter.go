@@ -13,10 +13,28 @@ import (
 
 // 结果
 func AddResult(ctx *gin.Context) {
+	var err error
 	res := &model.Result{}
-	if err := ctx.ShouldBindJSON(res); err != nil {
+	if err = ctx.ShouldBindJSON(res); err != nil {
 		panic("绑定失败")
 	}
+
+	//查询是否有此身份证居民，没有就添加居民
+	peoples, err := dao.SelectPeoplesList("", "", "", res.Sfz.Idnumber)
+	if len(peoples) == 0 {
+		dao.InsertPeople(&model.People{
+			Model:    res.Model,
+			Phone:    "",
+			Email:    "",
+			Age:      res.Sfz.Age,
+			Birthday: res.Sfz.Birthday,
+			Idnumber: res.Sfz.Idnumber,
+			Name:     res.Sfz.Name,
+			Nation:   res.Sfz.Nation,
+			Sex:      res.Sfz.Sex,
+		})
+	}
+
 	result := dao.InsertResult(res)
 	if result.RowsAffected != 0 {
 		response.ResponseDML(ctx, result.RowsAffected, result.Error)

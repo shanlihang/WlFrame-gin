@@ -207,14 +207,28 @@ func QueryPermissionList(context *gin.Context) {
 // 查询树状功能列表
 func QueryMenusList(context *gin.Context) {
 	top, result := dao.SelectTopPermission()
-	for _, item := range top {
-		child, _ := dao.SelectSubPermission(item.ID)
-		item.Children = append(item.Children, child...)
-		for _, i := range child {
-			childs, _ := dao.SelectSubPermission(i.ID)
-			i.Children = append(i.Children, childs...)
-		}
-	}
+	//rolesAny, ok := context.Get("roles")
+	//if !ok {
+	//	panic(fmt.Sprintln("获取用户角色失败"))
+	//}
+	//roles := rolesAny.([]string)
+	//for j, role := range roles {
+	//	for _, item := range top {
+	//		child, _ := dao.SelectSubPermission(item.ID)
+	//		item.Children = append(item.Children, child...)
+	//		for _, i := range child {
+	//			childs, _ := dao.SelectSubPermission(i.ID)
+	//			for _, child2 := range childs {
+	//				permissionList, _ := dao.SelectPermissionList(int64(child2.ID))
+	//				if permissionList.Name == role {
+	//
+	//				}
+	//			}
+	//			i.Children = append(i.Children, childs...)
+	//		}
+	//	}
+	//}
+
 	response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
 }
 
@@ -296,7 +310,7 @@ func UserRegister(context *gin.Context) {
 		response.ResponseText(context, "用户名已存在")
 		return
 	}
-	res := dao.InsertUser(*user, []uint{}) //注册用户时。角色为空
+	res := dao.InsertUser(*user, []int64{}) //注册用户时。角色为空
 	if res.RowsAffected != 0 {
 		response.ResponseText(context, "注册成功")
 	} else {
