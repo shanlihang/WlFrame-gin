@@ -2,12 +2,13 @@ package router
 
 import (
 	"WlFrame-gin/app/medical/server"
+	"WlFrame-gin/utils/authentication"
 
 	"github.com/gin-gonic/gin"
 )
 
 func MedicalRouter(e *gin.Engine) {
-	system := e.Group("/api/v1/medical")
+	system := e.Group("/api/v1/medical", authentication.Rbac())
 	//结果
 	{
 		system.POST("/result/add", server.AddResult)

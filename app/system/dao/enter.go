@@ -2,14 +2,25 @@ package dao
 
 import (
 	"WlFrame-gin/app/system/model"
+	"WlFrame-gin/utils/authentication"
 	"WlFrame-gin/utils/global"
+	"fmt"
 
 	"gorm.io/gorm"
 )
 
 // 新增用户
-func InsertUser(user model.SysUser) *gorm.DB {
+func InsertUser(user model.SysUser, roleIDs []uint) *gorm.DB {
 	result := global.DB.Model(model.SysUser{}).Create(&user)
+	// 创建用户角色关联
+	for _, roleID := range roleIDs {
+		userRole := model.RelateUserRole{
+			SysUserID: user.ID,
+			SysRoleID: roleID,
+		}
+		global.DB.Model(model.RelateUserRole{}).Create(&userRole)
+	}
+
 	return result
 }
 
@@ -45,14 +56,27 @@ func SelectUserById(id int64) (model.SysUser, *gorm.DB) {
 }
 
 // 修改用户
-func UpdateUser(user model.SysUser) *gorm.DB {
+func UpdateUser(user model.SysUser, roles []uint) *gorm.DB {
 	result := global.DB.Save(&user)
+	for _, roleID := range roles {
+		userRole := model.RelateUserRole{
+			SysUserID: user.ID,
+			SysRoleID: roleID,
+		}
+		global.DB.Model(model.RelateUserRole{}).Create(&userRole)
+	}
 	return result
 }
 
 // 删除用户
 func DeleteUser(id int64) *gorm.DB {
 	result := global.DB.Delete(&model.SysUser{}, id)
+
+	//删除用户-角色关联
+	global.DB.Model(model.RelateUserRole{}).
+		Where("sys_user_id = ?", id).
+		Delete(&model.RelateUserRole{})
+
 	return result
 }
 
@@ -71,20 +95,65 @@ func SelectUserByUserName(username string) int64 {
 }
 
 // 新增角色
-func InsertRole(role model.SysRole) *gorm.DB {
+func InsertRole(role model.SysRole, jurisdictions []model.Jurisdiction) *gorm.DB {
 	result := global.DB.Model(model.SysRole{}).Create(&role)
+	for _, jurisdiction := range jurisdictions {
+		rolePermission := model.RelateRolePermission{
+			SysRoleID:       role.ID,
+			SysPermissionID: jurisdiction.Value,
+		}
+		global.DB.Model(model.RelateRolePermission{}).Create(&rolePermission)
+	}
 	return result
 }
 
 // 删除角色
 func DeleteRole(id int64) *gorm.DB {
+	//查询角色名称
+	sysRole, _ := SelectRoleById(id)
+	//获取包含这个角色名称的权限 Policy
+	var casbinRuleS = [][]string{}
+	list := authentication.Enforcer.GetPolicy()
+	for _, vlist := range list {
+		if vlist[0] == sysRole.Name {
+			casbinRuleS = append(casbinRuleS, vlist)
+		}
+	}
+
 	result := global.DB.Delete(&model.SysRole{}, id)
+
+	//删除角色-权限关联
+	global.DB.Model(model.RelateRolePermission{}).
+		Where("sys_role_id = ?", id).
+		Delete(&model.RelateRolePermission{})
+
+	//删除权限 Policy
+	for _, casbinRule := range casbinRuleS {
+		ok := authentication.Enforcer.RemovePolicy(casbinRule[0], casbinRule[1], casbinRule[2])
+		if !ok {
+			fmt.Println("Policy不存在")
+		}
+	}
 	return result
 }
 
 // 修改角色
-func UpdateRole(role model.SysRole) *gorm.DB {
+func UpdateRole(role model.SysRole, jurisdictions []model.Jurisdiction) *gorm.DB {
 	result := global.DB.Save(&role)
+
+	//删除已有的角色-权限关联
+	global.DB.Model(model.RelateRolePermission{}).
+		Where("sys_role_id = ?", role.ID).
+		Delete(&model.RelateRolePermission{})
+
+	//重新加入 角色-权限关联
+	for _, jurisdiction := range jurisdictions {
+		rolePermission := model.RelateRolePermission{
+			SysRoleID:       role.ID,
+			SysPermissionID: jurisdiction.Value,
+		}
+		global.DB.Model(model.RelateRolePermission{}).Create(&rolePermission)
+	}
 	return result
 }
 
@@ -100,6 +169,19 @@ func SelectRoleById(id int64) (model.SysRole, *gorm.DB) {
 	var role model.SysRole
 	result := global.DB.Where("ID = ?", id).First(&role)
 	return role, result
+}
+
+// 根据用户id查询角色
+func SelectRelateUserRoleById(id int64) ([]string, *gorm.DB) {
+	var relateUserRoles []model.RelateUserRole
+	result := global.DB.Model(model.RelateUserRole{}).Where("sys_user_id = ?", id).Find(&relateUserRoles)
+	var roleNames []string
+	for _, relateUserRole := range relateUserRoles {
+		//根据角色id查询角色信息
+		sysRole, _ := SelectRoleById(int64(relateUserRole.SysRoleID))
+		roleNames = append(roleNames, sysRole.Name)
+	}
+	return nil, result
 }
 
 // 新增权限

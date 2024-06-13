@@ -5,7 +5,7 @@ server:
 database:
   dbName: wldz
   username: root
-  password: 67490009
+  password: ke136136
   host: 127.0.0.1
   port: 3306
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"WlFrame-gin/middleware/cors"
+	"WlFrame-gin/utils/authentication"
 	"WlFrame-gin/utils/global"
 	_ "WlFrame-gin/utils/initialization/initDb"
 	_ "WlFrame-gin/utils/initialization/initJWT"
@@ -17,6 +18,9 @@ func main() {
 	r.Use(cors.Cors())
 
 	initRouter.InitRouter(r)
+
+	//初始化Casbin
+	authentication.CasbinSetup()
 
 	////监听端口，默认为8080
 	if err := r.Run(":" + global.ServerConfig.Port); err == nil {

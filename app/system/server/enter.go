@@ -3,9 +3,11 @@ package server
 import (
 	"WlFrame-gin/app/system/dao"
 	"WlFrame-gin/app/system/model"
+	"WlFrame-gin/utils/authentication"
 	"WlFrame-gin/utils/jwt"
 	"WlFrame-gin/utils/response"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -15,12 +17,24 @@ import (
 
 // 新增用户
 func AddUser(context *gin.Context) {
-	user := model.SysUser{}
+	//user := model.SysUser{}
+	user := model.SysUserFrontEnd{}
 	if err := context.ShouldBindJSON(&user); err != nil {
 		panic(fmt.Sprintf("user数据绑定失败，错误信息为：%v", err))
 	}
 	user.Password = passwordHash(user.Password)
-	result := dao.InsertUser(user)
+	//创建用户
+	result := dao.InsertUser(model.SysUser{
+		Model:    user.Model,
+		Name:     user.Name,
+		Username: user.Username,
+		Password: user.Password,
+		Phone:    user.Phone,
+		Sex:      user.Sex,
+		Birthday: user.Birthday,
+		Email:    user.Email,
+	}, user.Roles)
+
 	if result.RowsAffected != 0 {
 		response.ResponseDML(context, result.RowsAffected, result.Error)
 	}
@@ -51,11 +65,21 @@ func QueryUserById(context *gin.Context) {
 
 // 更新用户
 func ChangeUser(context *gin.Context) {
-	user := model.SysUser{}
+	//user := model.SysUser{}
+	user := model.SysUserFrontEnd{}
 	if err := context.ShouldBindJSON(&user); err != nil {
 		panic(fmt.Sprintf("user数据绑定失败，错误信息为：%v", err))
 	}
-	result := dao.UpdateUser(user)
+	result := dao.UpdateUser(model.SysUser{
+		Model:    user.Model,
+		Name:     user.Name,
+		Username: user.Username,
+		Password: user.Password,
+		Phone:    user.Phone,
+		Sex:      user.Sex,
+		Birthday: user.Birthday,
+		Email:    user.Email,
+	}, user.Roles)
 	response.ResponseDML(context, result.RowsAffected, result.Error)
 }
 
@@ -71,11 +95,26 @@ func RemoveUser(context *gin.Context) {
 
 // 新增角色
 func AddRole(context *gin.Context) {
-	role := model.SysRole{}
-	if err := context.ShouldBindJSON(&role); err != nil {
+	role := model.SysRoleFrontEnd{}
+	if err := context.BindJSON(&role); err != nil {
 		panic(fmt.Sprintf("role数据绑定失败，错误信息为：%v", err))
 	}
-	result := dao.InsertRole(role)
+	// 根据权限id查询权限信息
+	for _, permission := range role.Permissions {
+		sysPermission, _ := dao.SelectPermissionById(int64(permission.Value))
+		//增加 Policy(角色的权限；此次获取不了请求方法，全部设置为 GET，权限校验时不校验请求方法)
+		ok := authentication.Enforcer.AddPolicy(role.Name, sysPermission.URI, "GET")
+		if !ok {
+			fmt.Println("Policy已经存在")
+		}
+	}
+
+	result := dao.InsertRole(model.SysRole{
+		Model: role.Model,
+		Desc:  role.Desc,
+		Name:  role.Name,
+		//UserID: role.UserID,
+	}, role.Permissions)
 	if result.RowsAffected != 0 {
 		response.ResponseDML(context, result.RowsAffected, result.Error)
 	}
@@ -93,11 +132,16 @@ func RemoveRole(context *gin.Context) {
 
 // 更新角色
 func ChangeRole(context *gin.Context) {
-	role := model.SysRole{}
+	//role := model.SysRole{}
+	role := model.SysRoleFrontEnd{}
 	if err := context.ShouldBindJSON(&role); err != nil {
 		panic(fmt.Sprintf("role数据绑定失败，错误信息为：%v", err))
 	}
-	result := dao.UpdateRole(role)
+	result := dao.UpdateRole(model.SysRole{
+		Model: role.Model,
+		Desc:  role.Desc,
+		Name:  role.Name,
+	}, role.Permissions)
 	response.ResponseDML(context, result.RowsAffected, result.Error)
 }
 
@@ -204,14 +248,17 @@ func LoginSys(context *gin.Context) {
 	err := ComparePassword(result.Password, loginMsg.Password)
 	if err != nil {
 		response.ResponseText(context, "密码错误")
+		context.Next()
 		return
 	}
-	token, err := jwt.GenerateToken(1, "slh")
+	roleNames, _ := dao.SelectRelateUserRoleById(int64(result.ID))
+	token, err := jwt.GenerateToken(1, "slh", roleNames)
 	if err != nil {
 		response.ResponseText(context, "token生成出错")
 		return
 	}
 	result.Password = ""
+	log.Println(token)
 	context.JSON(http.StatusOK, gin.H{
 		"msg":      "登录成功",
 		"token":    token,
@@ -246,7 +293,7 @@ func UserRegister(context *gin.Context) {
 		response.ResponseText(context, "用户名已存在")
 		return
 	}
-	res := dao.InsertUser(*user)
+	res := dao.InsertUser(*user, []uint{}) //注册用户时。角色为空
 	if res.RowsAffected != 0 {
 		response.ResponseText(context, "注册成功")
 	} else {

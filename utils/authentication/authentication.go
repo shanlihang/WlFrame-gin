@@ -1,0 +1,93 @@
+package authentication
+
+import (
+	"WlFrame-gin/conf"
+	"WlFrame-gin/utils/global"
+	"WlFrame-gin/utils/jwt"
+	"fmt"
+	"github.com/casbin/casbin"
+	xormadapter "github.com/casbin/xorm-adapter"
+	"github.com/gin-gonic/gin"
+	"log"
+)
+
+var Enforcer *casbin.Enforcer
+
+// 初始化casbin
+func CasbinSetup() {
+	global.DBConfig = conf.GetDatabaseConfig()
+
+	dataSourceName := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8",
+		global.DBConfig.Username,
+		global.DBConfig.Password,
+		global.DBConfig.Host,
+		global.DBConfig.Port,
+		global.DBConfig.DbName,
+	)
+	a := xormadapter.NewAdapter("mysql", dataSourceName, true)
+
+	e := casbin.NewEnforcer("conf/rbac_models.conf", a)
+
+	Enforcer = e
+}
+
+// 拦截器
+func Rbac() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
+		//校验token
+		claims, ok := jwt.AnalysisToken(token)
+		if !ok {
+			fmt.Println("token校验失败")
+			c.Next()
+		} else {
+			var e *casbin.Enforcer
+			e = Enforcer
+
+			//从mysql中加载策略
+			err := e.LoadPolicy()
+			if err != nil {
+				log.Println("从mysql中加载策略失败", err)
+			}
+
+			//获取请求的URI
+			obj := c.Request.URL.RequestURI()
+			//获取请求方法
+			act := c.Request.Method
+			//获取用户的角色列表
+			//value, ok := c.Get("role")
+
+			if !ok {
+				//角色信息为空
+				fmt.Println("很遗憾,权限验证没有通过")
+				c.Abort()
+			} else if len(claims.Role) == 0 {
+				//角色信息为空
+				fmt.Println("很遗憾,权限验证没有通过")
+				c.Abort()
+			} else {
+				//默认权限校验不通过
+				isTrue := false
+				for _, roleName := range claims.Role {
+					sub := roleName
+					//判断策略中是否存在
+					ok := e.Enforce(sub, obj, "GET")
+					if ok {
+						log.Println(obj, act, sub)
+						//只要有一个角色的权限校验通过，那么就该用户权限校验通过
+						isTrue = true
+						break
+					}
+				}
+				if !isTrue {
+					fmt.Println("很遗憾,权限验证没有通过")
+					c.Abort()
+				} else {
+					fmt.Println("权限验证通过")
+					c.Next()
+				}
+			}
+		}
+	}
+}
