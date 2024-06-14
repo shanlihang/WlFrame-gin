@@ -27,10 +27,11 @@ func SystemRouter(e *gin.Engine) {
 		system.DELETE("/role/:id", server.RemoveRole)
 	}
 	// 权限模块 api
+	systemPermission := e.Group("/api/v1/system", authentication.Rbac())
 	{
 		system.GET("/permission/common", server.SelectPermissionList)
 		system.GET("/permission/menu", server.QueryPermissionList)
-		system.GET("/permission/tree", server.QueryMenusList)
+		systemPermission.GET("/permission/tree", server.QueryMenusList)
 		system.POST("/permission/add", server.AddPermission)
 		system.GET("/permission/:id", server.QueryPermissionById)
 		system.PUT("/permission/change", server.ChangePermission)
@@ -39,7 +40,7 @@ func SystemRouter(e *gin.Engine) {
 	systemSys := e.Group("/api/v1/system")
 	// 登录注册模块 api
 	{
-		systemSys.POST("/sys/login", server.LoginSys, authentication.Rbac())
+		systemSys.POST("/sys/login", server.LoginSys)
 		systemSys.POST("/sys/register", server.UserRegister)
 	}
 }

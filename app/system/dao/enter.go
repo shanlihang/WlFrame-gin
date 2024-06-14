@@ -5,7 +5,6 @@ import (
 	"WlFrame-gin/utils/authentication"
 	"WlFrame-gin/utils/global"
 	"fmt"
-
 	"gorm.io/gorm"
 )
 
@@ -184,6 +183,43 @@ func SelectRelateUserRoleById(id int64) ([]string, *gorm.DB) {
 	return roleNames, result
 }
 
+// 根据用户id查询权限ID
+func SelectRelateUserRoleIDById(id int64) ([]uint, *gorm.DB) {
+	var relateUserRoles []model.RelateUserRole
+	result := global.DB.Model(model.RelateUserRole{}).Where("sys_user_id = ?", id).Find(&relateUserRoles)
+
+	var relateUserRoleSNew []model.RelateRolePermission
+	for _, relateUserRole := range relateUserRoles {
+		//根据角色id查询权限id
+		var relateUserRoleS []model.RelateRolePermission
+		global.DB.Model(model.RelateRolePermission{}).Where("sys_role_id = ?", relateUserRole.SysRoleID).Find(&relateUserRoleS)
+		relateUserRoleSNew = append(relateUserRoleSNew, relateUserRoleS...)
+	}
+	//去重
+	relateUserRoleSNew = removeDuplicatesByRoleID(relateUserRoleSNew)
+
+	var SysPermissionIDs []uint
+	for _, permission := range relateUserRoleSNew {
+		SysPermissionIDs = append(SysPermissionIDs, permission.SysPermissionID)
+	}
+
+	return SysPermissionIDs, result
+}
+
+// 定义一个函数来去除切片中的重复RoleID
+func removeDuplicatesByRoleID(arr []model.RelateRolePermission) []model.RelateRolePermission {
+	encountered := map[int]bool{}
+	result := []model.RelateRolePermission{}
+
+	for _, v := range arr {
+		if !encountered[int(v.SysPermissionID)] {
+			encountered[int(v.SysPermissionID)] = true
+			result = append(result, v)
+		}
+	}
+	return result
+}
+
 // 新增权限
 func InsertPermission(permission model.SysPermission) *gorm.DB {
 	result := global.DB.Model(model.SysPermission{}).Create(&permission)
@@ -250,12 +286,32 @@ func DeleteCaptcha(key string) *gorm.DB {
 	return result
 }
 
-// 根据角色id查询权限
-func SelectPermissionList(roleID int64) ([]model.SysPermission, *gorm.DB) {
-	var permissions []model.SysPermission
+// 根据权限id查询角色信息
+func SelectPermissionList(permissionsID int64) ([]model.SysRole, *gorm.DB) {
+	var relateRolePermission []model.RelateRolePermission
 	result := global.DB.Model(model.RelateRolePermission{}).
-		Where("sys_role_id = ?", roleID).
-		Joins("left join sys_permission on sys_permission.ID = sys_relate_role_permission.sys_permission_id").
-		Find(&permissions)
-	return permissions, result
+		Where("sys_permission_id = ?", permissionsID).
+		Find(&relateRolePermission)
+	var roles []model.SysRole
+	for _, rolePermission := range relateRolePermission {
+		sysRole, _ := SelectRoleById(int64(rolePermission.SysRoleID))
+		roles = append(roles, sysRole)
+	}
+	return roles, result
+}
+
+// 根据角色id获取权限
+func selectPermissionByRoleID(roleIDsStr []string) {
+	//根据角色名称获取id
+	var roleIDs []int64
+	for _, roleIDStr := range roleIDsStr {
+		var role model.SysRole
+		global.DB.Model(model.SysRole{}).Where("name = ?", roleIDStr).Find(&role)
+		roleIDs = append(roleIDs, int64(role.ID))
+	}
+	//var rolePermission []model.RelateRolePermission
+	//for _, roleID := range roleIDs {
+	//	var rolePermission []model.RelateRolePermission
+	//	global.DB.Model(model.RelateRolePermission{}).Where("sys_role_id = ?", roleID).Find(&rolePermission)
+	//}
 }

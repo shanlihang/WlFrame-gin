@@ -13,10 +13,11 @@ type Claims struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 	jwt.StandardClaims
-	Role []string `json:"role"`
+	Role             []string `json:"role"`
+	SysPermissionIDs []uint   `json:"sysPermissionIDs"`
 }
 
-func GenerateToken(id int64, name string, role []string) (string, error) {
+func GenerateToken(id int64, name string, role []string, sysPermissionIDs []uint) (string, error) {
 	claims := &Claims{
 		ID:   id,
 		Name: name,
@@ -25,7 +26,8 @@ func GenerateToken(id int64, name string, role []string) (string, error) {
 			ExpiresAt: int64(time.Hour * 24 * 7),
 			Issuer:    global.Issuer,
 		},
-		Role: role,
+		Role:             role,
+		SysPermissionIDs: sysPermissionIDs,
 	}
 	//token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(global.Secret)
 	// 使用指定的签名方法创建签名对象

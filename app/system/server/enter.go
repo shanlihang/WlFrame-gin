@@ -4,6 +4,7 @@ import (
 	"WlFrame-gin/app/system/dao"
 	"WlFrame-gin/app/system/model"
 	"WlFrame-gin/utils/authentication"
+	"WlFrame-gin/utils/global"
 	"WlFrame-gin/utils/jwt"
 	"WlFrame-gin/utils/response"
 	"fmt"
@@ -211,25 +212,95 @@ func QueryMenusList(context *gin.Context) {
 	//if !ok {
 	//	panic(fmt.Sprintln("获取用户角色失败"))
 	//}
-	//roles := rolesAny.([]string)
-	//for j, role := range roles {
-	//	for _, item := range top {
-	//		child, _ := dao.SelectSubPermission(item.ID)
-	//		item.Children = append(item.Children, child...)
-	//		for _, i := range child {
-	//			childs, _ := dao.SelectSubPermission(i.ID)
-	//			for _, child2 := range childs {
-	//				permissionList, _ := dao.SelectPermissionList(int64(child2.ID))
-	//				if permissionList.Name == role {
+	for _, item := range top {
+		child, _ := dao.SelectSubPermission(item.ID)
+		item.Children = append(item.Children, child...)
+		for _, i := range child {
+			childs, _ := dao.SelectSubPermission(i.ID)
+			i.Children = append(i.Children, childs...)
+		}
+	}
+	/*roles := rolesAny.([]string)
+	var a []*model.SysPermission
+	for _, role := range roles {
+		for _, item := range top { // 系统
+			child, _ := dao.SelectSubPermission(item.ID)
+			a = append(a, child...)
+			//a.Children = append(item.Children, child...)
+			log.Println(role)
+			//for _, i := range child { // 管理
+			//	childs, _ := dao.SelectSubPermission(i.ID) //获取权限id列表
+			//	for _, child2 := range childs {
+			//		sysRoleList, _ := dao.SelectPermissionList(int64(child2.ID)) //根据权限id获取角色id
+			//		for _, sysRole := range sysRoleList {
+			//			if sysRole.Name == role { //如果符合则加入
+			//				i.Children = append(i.Children, child2)
+			//			}
+			//		}
+			//	}
+			//
+			//}
+		}
+	}*/
+
+	//判断角色属于哪个管理
+	//for _, role := range roles {
 	//
-	//				}
-	//			}
-	//			i.Children = append(i.Children, childs...)
-	//		}
+	//}
+	//
+	//for _, permission := range top {
+	//	//fmt.Println(permission)
+	//	childList, _ := dao.SelectSubPermission(permission.ID)
+	//	for _, child := range childList {
+	//		fmt.Println(child)
 	//	}
 	//}
 
-	response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
+	value, ok := context.Get("sysPermissionIDs")
+	if !ok {
+		panic(fmt.Sprintf("获取sysPermissionIDs失败"))
+	}
+	sysPermissionIDs := value.([]uint) //权限id列表
+	//根据权限id列表获取二级目录id
+	var ID2s []uint //拥有的权限二级目录id(去重，搜索，添加)
+	for _, id := range sysPermissionIDs {
+		permission := model.SysPermission{}
+		global.DB.Where("ID = ?", id).Find(&permission)
+		ID2s = append(ID2s, uint(permission.ParentID))
+	}
+
+	//去重
+	ID2s = removeDuplicates(ID2s)
+	log.Println("去重后", ID2s)
+
+	topNew, _ := dao.SelectTopPermission()
+	for _, permission := range topNew {
+		for _, id2 := range ID2s {
+			sysPermission, _ := dao.SelectPermissionById(int64(id2))
+			if sysPermission.ParentID == int64(permission.ID) {
+				permission.Children = append(permission.Children, &sysPermission)
+			}
+		}
+	}
+	log.Println(topNew)
+
+	response.ResponseDQL(context, topNew, result.RowsAffected, result.RowsAffected, result.Error)
+	//response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// []uint去重
+func removeDuplicates(ID2s []uint) []uint {
+	seen := make(map[uint]bool)
+	result := []uint{}
+
+	for _, id := range ID2s {
+		if _, exists := seen[id]; !exists {
+			seen[id] = true
+			result = append(result, id)
+		}
+	}
+
+	return result
 }
 
 // 查询普通列表
@@ -269,7 +340,8 @@ func LoginSys(context *gin.Context) {
 		return
 	}
 	roleNames, _ := dao.SelectRelateUserRoleById(int64(result.ID))
-	token, err := jwt.GenerateToken(1, "slh", roleNames)
+	SysPermissionIDs, _ := dao.SelectRelateUserRoleIDById(int64(result.ID))
+	token, err := jwt.GenerateToken(1, "slh", roleNames, SysPermissionIDs)
 	if err != nil {
 		response.ResponseText(context, "token生成出错")
 		return

@@ -37,12 +37,13 @@ func Rbac() gin.HandlerFunc {
 		token := c.GetHeader("Authorization")
 		//校验token
 		claims, ok := jwt.AnalysisToken(token)
+
 		if !ok {
 			fmt.Println("token校验失败")
-			c.Next()
+			c.Abort()
 		} else if token == "---000---" {
 			//跳过鉴权
-			c.Abort()
+			c.Next()
 		} else {
 			var e *casbin.Enforcer
 			e = Enforcer
@@ -69,6 +70,12 @@ func Rbac() gin.HandlerFunc {
 				fmt.Println("很遗憾,权限验证没有通过")
 				c.Abort()
 			} else {
+				c.Set("roles", claims.Role)
+				c.Set("sysPermissionIDs", claims.SysPermissionIDs)
+				if obj == "/api/v1/system/permission/tree" {
+					c.Next()
+					return
+				}
 				//默认权限校验不通过
 				isTrue := false
 				for _, roleName := range claims.Role {
@@ -88,7 +95,7 @@ func Rbac() gin.HandlerFunc {
 					c.Abort()
 				} else {
 					fmt.Println("权限验证通过")
-					c.Set("roles", claims.Role)
+
 					c.Next()
 				}
 			}
