@@ -9,6 +9,7 @@ import (
 	xormadapter "github.com/casbin/xorm-adapter/v2"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 )
 
 var Enforcer *casbin.Enforcer
@@ -40,6 +41,8 @@ func Rbac() gin.HandlerFunc {
 
 		if !ok {
 			fmt.Println("token校验失败")
+			// 重定向到首页
+			c.Redirect(http.StatusFound, "/login")
 			c.Abort()
 		} else if token == "---000---" {
 			//跳过鉴权

@@ -2,7 +2,6 @@ package router
 
 import (
 	"WlFrame-gin/app/system/server"
-	"WlFrame-gin/utils/authentication"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,11 +26,12 @@ func SystemRouter(e *gin.Engine) {
 		system.DELETE("/role/:id", server.RemoveRole)
 	}
 	// 权限模块 api
-	systemPermission := e.Group("/api/v1/system", authentication.Rbac())
+	//systemPermission := e.Group("/api/v1/system", authentication.Rbac())
 	{
 		system.GET("/permission/common", server.SelectPermissionList)
 		system.GET("/permission/menu", server.QueryPermissionList)
-		systemPermission.GET("/permission/tree", server.QueryMenusList)
+		//systemPermission.GET("/permission/tree", server.QueryMenusList)
+		system.GET("/permission/tree", server.QueryMenusList)
 		system.POST("/permission/add", server.AddPermission)
 		system.GET("/permission/:id", server.QueryPermissionById)
 		system.PUT("/permission/change", server.ChangePermission)
