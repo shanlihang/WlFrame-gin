@@ -83,22 +83,20 @@ func Rbac() gin.HandlerFunc {
 				isTrue := false
 				for _, roleName := range claims.Role {
 					sub := roleName
-					log.Println(obj, sub, act)
 					//判断策略中是否存在
 					ok, _ := e.Enforce(sub, obj, "GET")
 					if ok {
-						log.Println(obj, act, sub)
+						log.Println("权限校验通过：", obj, act, sub)
 						//只要有一个角色的权限校验通过，那么就该用户权限校验通过
 						isTrue = true
 						break
 					}
 				}
 				if !isTrue {
-					fmt.Println("很遗憾,权限验证没有通过")
+					log.Println("很遗憾,权限验证没有通过:", act, obj)
 					c.Abort()
 				} else {
 					fmt.Println("权限验证通过")
-
 					c.Next()
 				}
 			}

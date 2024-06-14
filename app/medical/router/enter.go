@@ -2,12 +2,13 @@ package router
 
 import (
 	"WlFrame-gin/app/medical/server"
+	"WlFrame-gin/utils/authentication"
 	"github.com/gin-gonic/gin"
 )
 
 func MedicalRouter(e *gin.Engine) {
-	//system := e.Group("/api/v1/medical", authentication.Rbac())
-	system := e.Group("/api/v1/medical")
+	system := e.Group("/api/v1/medical", authentication.Rbac())
+	//system := e.Group("/api/v1/medical")
 	//结果
 	{
 		system.POST("/result/add", server.AddResult)
@@ -22,14 +23,15 @@ func MedicalRouter(e *gin.Engine) {
 		system.DELETE("/community/:id", server.DropCommunity)
 	}
 	//物品
+	systemGoods := e.Group("/api/v1/medical")
 	{
-		system.POST("/goods/add", server.AddGoods)
-		system.GET("/goods/list", server.GetGoodsList)
-		system.PUT("/goods/update", server.ChangeGoods)
-		system.DELETE("/goods/:id", server.DropGoods)
-		system.GET("/goods/:id", server.GetGoodById)
-		system.GET("/goods/put", server.PutGood)
-		system.GET("/goods/out", server.OutGood)
+		systemGoods.POST("/goods/add", server.AddGoods)
+		systemGoods.GET("/goods/list", server.GetGoodsList)
+		systemGoods.PUT("/goods/update", server.ChangeGoods)
+		systemGoods.DELETE("/goods/:id", server.DropGoods)
+		systemGoods.GET("/goods/:id", server.GetGoodById)
+		systemGoods.GET("/goods/put", server.PutGood)
+		systemGoods.GET("/goods/out", server.OutGood)
 	}
 	//推送
 	{

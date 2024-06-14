@@ -10,6 +10,7 @@ import (
 
 // 新增用户
 func InsertUser(user model.SysUser, roleIDs []int64) *gorm.DB {
+	user.Birthday = user.Birthday[:10]
 	result := global.DB.Model(model.SysUser{}).Create(&user)
 	// 创建用户角色关联
 	for _, roleID := range roleIDs {
@@ -57,6 +58,9 @@ func SelectUserById(id int64) (model.SysUser, *gorm.DB) {
 // 修改用户
 func UpdateUser(user model.SysUser, roles []int64) *gorm.DB {
 	result := global.DB.Save(&user)
+	//删除之前用户的所有角色（后面覆盖）
+	global.DB.Unscoped().Where("sys_user_id = ?", user.ID).Delete(&model.RelateUserRole{})
+	//添加新的角色（覆盖）
 	for _, roleID := range roles {
 		userRole := model.RelateUserRole{
 			SysUserID: user.ID,

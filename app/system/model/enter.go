@@ -28,6 +28,20 @@ type SysUserFrontEnd struct {
 	Roles    []int64 `json:"roles"`
 }
 
+// 用户更新接收json数据
+type SysUserChange struct {
+	gorm.Model
+	Name     string    `gorm:"column:name" json:"name"`
+	Username string    `gorm:"column:username" json:"username"`
+	Password string    `gorm:"column:password" json:"password"`
+	Phone    string    `gorm:"column:phone" json:"phone"`
+	Sex      int64     `gorm:"column:sex" json:"sex"`
+	Birthday string    `gorm:"column:birthday" json:"birthday"`
+	Email    string    `gorm:"column:email" json:"email"`
+	SysRoles []SysRole `gorm:"many2many:relate_user_role" json:"Roles"`
+	Roles    []int64   `json:"roles"`
+}
+
 func (user SysUser) TableName() string {
 	return "sys_user"
 }

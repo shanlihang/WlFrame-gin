@@ -3,7 +3,9 @@ package server
 import (
 	"WlFrame-gin/app/system/dao"
 	"WlFrame-gin/app/system/model"
+	"WlFrame-gin/utils/arrayProcessing"
 	"WlFrame-gin/utils/authentication"
+	"WlFrame-gin/utils/global"
 	"WlFrame-gin/utils/jwt"
 	"WlFrame-gin/utils/response"
 	"fmt"
@@ -67,10 +69,14 @@ func QueryUserById(context *gin.Context) {
 // 更新用户
 func ChangeUser(context *gin.Context) {
 	//user := model.SysUser{}
-	user := model.SysUserFrontEnd{}
+	user := model.SysUserChange{}
 	if err := context.ShouldBindJSON(&user); err != nil {
 		panic(fmt.Sprintf("user数据绑定失败，错误信息为：%v", err))
 	}
+	//var roleIds []int64
+	//for _, role := range user.Roles {
+	//	roleIds = append(roleIds, int64(role.ID))
+	//}
 	result := dao.UpdateUser(model.SysUser{
 		Model:    user.Model,
 		Name:     user.Name,
@@ -216,35 +222,49 @@ func QueryMenusList(context *gin.Context) {
 		}
 	}
 
-	/*	value, ok := context.Get("sysPermissionIDs")
-		if !ok {
-			panic(fmt.Sprintf("获取sysPermissionIDs失败"))
-		}
-		sysPermissionIDs := value.([]uint) //权限id列表
-		//根据权限id列表获取二级目录id
-		var ID2s []uint //拥有的权限二级目录id(去重，搜索，添加)
-		for _, id := range sysPermissionIDs {
-			permission := model.SysPermission{}
-			global.DB.Where("ID = ?", id).Find(&permission)
-			ID2s = append(ID2s, uint(permission.ParentID))
-		}
+	value, ok := context.Get("sysPermissionIDs")
+	if !ok {
+		panic(fmt.Sprintf("获取sysPermissionIDs失败"))
+	}
+	sysPermissionIDs := value.([]uint) //权限id列表
+	//根据权限id列表获取二级目录id
+	var ID2s []uint //拥有的权限二级目录id(去重，搜索，添加)
+	for _, id := range sysPermissionIDs {
+		permission := model.SysPermission{}
+		global.DB.Where("ID = ?", id).Find(&permission)
+		ID2s = append(ID2s, uint(permission.ParentID))
+	}
 
-		//去重
-		ID2s = arrayProcessing.RemoveDuplicates(ID2s)
-		log.Println("去重后", ID2s)
+	//去重
+	ID2s = arrayProcessing.RemoveDuplicates(ID2s)
+	log.Println("去重后", ID2s)
 
-		topNew, _ := dao.SelectTopPermission()
-		for _, permission := range topNew {
-			for _, id2 := range ID2s {
-				sysPermission, _ := dao.SelectPermissionById(int64(id2))
-				if sysPermission.ParentID == int64(permission.ID) {
-					permission.Children = append(permission.Children, &sysPermission)
-				}
+	topNew, _ := dao.SelectTopPermission()
+	for _, permission := range topNew {
+		for _, id2 := range ID2s {
+			sysPermission, _ := dao.SelectPermissionById(int64(id2))
+			if sysPermission.ParentID == int64(permission.ID) {
+				permission.Children = append(permission.Children, &sysPermission)
 			}
 		}
-		log.Println(topNew)*/
+	}
+	log.Println(topNew)
 
-	//response.ResponseDQL(context, topNew, result.RowsAffected, result.RowsAffected, result.Error)
+	response.ResponseDQL(context, topNew, result.RowsAffected, result.RowsAffected, result.Error)
+	//response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
+}
+
+// 新增用户操作的角色权限数据
+func QueryMenusListNew(context *gin.Context) {
+	top, result := dao.SelectTopPermission()
+	for _, item := range top {
+		child, _ := dao.SelectSubPermission(item.ID)
+		item.Children = append(item.Children, child...)
+		for _, i := range child {
+			childs, _ := dao.SelectSubPermission(i.ID)
+			i.Children = append(i.Children, childs...)
+		}
+	}
 	response.ResponseDQL(context, top, result.RowsAffected, result.RowsAffected, result.Error)
 }
 
