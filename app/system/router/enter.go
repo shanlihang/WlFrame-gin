@@ -31,8 +31,9 @@ func SystemRouter(e *gin.Engine) {
 	{
 		system.GET("/permission/common", server.SelectPermissionList)
 		system.GET("/permission/menu", server.QueryPermissionList)
-		//systemPermission.GET("/permission/tree", server.QueryMenusList)
-		system.GET("/permission/tree", server.QueryMenusList)
+		//systemPermission.GET("/permission/tree", server.QueryMenusList)//原来
+		//system.GET("/permission/tree", server.QueryMenusListNew) //不进行目录鉴权
+		system.GET("/permission/tree", server.QueryMenusList) //目录鉴权
 		//新增用户操作的角色权限数据
 		system.GET("/permission/treeNew", server.QueryMenusListNew)
 		system.POST("/permission/add", server.AddPermission)
